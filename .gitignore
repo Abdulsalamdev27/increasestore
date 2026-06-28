@@ -1,0 +1,15 @@
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    firstName VARCHAR(100) NOT NULL,
+
+    lastName VARCHAR(100) NOT NULL,
+
+    email VARCHAR(150) NOT NULL UNIQUE,
+
+    pnumber VARCHAR(20),
+
+    password_hash VARCHAR(255) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

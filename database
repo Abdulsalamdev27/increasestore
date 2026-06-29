@@ -1,0 +1,35 @@
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    firstName VARCHAR(100) NOT NULL,
+
+    lastName VARCHAR(100) NOT NULL,
+
+    email VARCHAR(150) NOT NULL UNIQUE,
+
+    pnumber VARCHAR(20),
+
+    password VARCHAR(255) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE stores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    store_name VARCHAR(150) NOT NULL,
+
+    owner_name VARCHAR(150),
+
+    email VARCHAR(150) UNIQUE,
+
+    phone VARCHAR(20),
+
+    address TEXT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+);

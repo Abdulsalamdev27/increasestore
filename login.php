@@ -74,12 +74,12 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
           </button>
 
           <!-- Signup -->
-          <p class="text-center text-sm text-gray-600 mt-6">
+          <!-- <p class="text-center text-sm text-gray-600 mt-6">
             New here?
             <a href="signup.php" class="text-color-two font-semibold hover:underline">
               Create an account
             </a>
-          </p>
+          </p> -->
 
         </form>
       </div>

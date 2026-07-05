@@ -14,7 +14,7 @@
       <i class="ph ph-qr-code text-xl"></i>
               <a href="/Einvite/index.php"
           class="text-2xl font-bold text-color-two font-title">
-          E-invite
+          Increase Store
         </a>
     </h2>
 
@@ -51,40 +51,40 @@
         class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
         <span class="flex items-center gap-3">
           <i class="ph-bold ph-calendar-heart text-lg"></i>
-          Event QR Code
+          Store
         </span>
         <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
       </summary>
 
       <div class="ml-8 mt-2 space-y-1">
-        <a href="create-events.php"
+        <a href="create-store.php"
           class="block py-1 text-sm hover:text-blue-600">
-          Create Event
+          Create Store
         </a>
-        <a href="view-all-events.php"
+        <a href="view-stores.php"
           class="block py-1 text-sm hover:text-blue-600">
-          View Events
+          View Store
         </a>
       </div>
     </details>
 
-    <!-- BUSINESS -->
+    <!-- staff -->
     <details class="group">
       <summary
         class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
         <span class="flex items-center gap-3">
           <i class="ph-bold ph-building-office text-lg"></i>
-          Business QR Code
+          Staff
         </span>
         <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
       </summary>
 
       <div class="ml-8 mt-2 space-y-1">
-        <a href="create-business.php" class="block py-1 text-sm hover:text-blue-600">
-          Create Business
+        <a href="create-staff.php" class="block py-1 text-sm hover:text-blue-600">
+          Create Staff
         </a>
-        <a href="view-all-businesses.php" class="block py-1 text-sm hover:text-blue-600">
-          View Businesses
+        <a href="view-all-staff.php" class="block py-1 text-sm hover:text-blue-600">
+          View Staff
         </a>
       </div>
     </details>

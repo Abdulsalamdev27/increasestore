@@ -52,3 +52,72 @@ CREATE TABLE staffs (
         REFERENCES stores(id)
         ON DELETE CASCADE
 );
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    product_name VARCHAR(255) NOT NULL,
+
+    barcode VARCHAR(100) NOT NULL UNIQUE,
+
+    sku VARCHAR(100),
+
+    category VARCHAR(100),
+
+    description TEXT,
+
+    selling_price DECIMAL(10,2) NOT NULL,
+
+    cost_price DECIMAL(10,2) DEFAULT 0.00,
+
+    quantity INT NOT NULL DEFAULT 0,
+
+    minimum_stock INT DEFAULT 0,
+
+    unit VARCHAR(50) DEFAULT 'pcs',
+
+    status ENUM(
+        'available',
+        'out_of_stock',
+        'discontinued'
+    ) DEFAULT 'available',
+
+    is_active TINYINT(1) DEFAULT 1,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+);
+ 
+
+ CREATE TABLE product_transfers (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    product_id INT NOT NULL,
+
+    store_id INT NOT NULL,
+
+    quantity INT NOT NULL,
+
+    movement_type ENUM('send','return') NOT NULL,
+
+    status ENUM('pending','accepted','rejected') DEFAULT 'pending',
+
+    reference_no VARCHAR(100),
+
+    remarks TEXT,
+
+    sent_by INT NOT NULL,
+
+    reviewed_by INT DEFAULT NULL,
+
+    reviewed_at DATETIME DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB;

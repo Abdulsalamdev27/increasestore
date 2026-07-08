@@ -89,47 +89,67 @@
       </div>
     </details>
 
-    <!-- HANDOUT -->
+    <!-- product -->
     <details class="group">
       <summary
         class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
         <span class="flex items-center gap-3">
           <i class="ph-bold ph-notebook text-lg"></i>
-          Handout QR Code
+          product 
         </span>
         <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
       </summary>
 
       <div class="ml-8 mt-2 space-y-1">
-        <a href="create-handout.php" class="block py-1 text-sm hover:text-blue-600">
-          Create Handout
+        <a href="create-product.php" class="block py-1 text-sm hover:text-blue-600">
+          Create product
         </a>
-        <a href="view-all-handout.php" class="block py-1 text-sm hover:text-blue-600">
-          View Handouts
+        <a href="view-all-product.php" class="block py-1 text-sm hover:text-blue-600">
+          View products
         </a>
       </div>
     </details>
 
-    <!-- CHURCH -->
+    <!-- Transfer product -->
     <details class="group">
       <summary
         class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
         <span class="flex items-center gap-3">
           <i class="ph-bold ph-book-open text-lg"></i>
-          Church QR Code
+          Transfer product
         </span>
         <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
       </summary>
 
       <div class="ml-8 mt-2 space-y-1">
-        <a href="create-church.php" class="block py-1 text-sm hover:text-blue-600">
-          Create Church
+        <a href="create-transfer-product.php" class="block py-1 text-sm hover:text-blue-600">
+          Create Transfer product
         </a>
-        <a href="view-all-church.php" class="block py-1 text-sm hover:text-blue-600">
-          View Churches
+        <a href="view-all-Transfer-product.php" class="block py-1 text-sm hover:text-blue-600">
+          View Transfer productes
         </a>
       </div>
     </details>
+    <!-- Transfer product -->
+    <!-- <details class="group">
+      <summary
+        class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
+        <span class="flex items-center gap-3">
+          <i class="ph-bold ph-book-open text-lg"></i>
+          Transfer product QR Code
+        </span>
+        <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
+      </summary>
+
+      <div class="ml-8 mt-2 space-y-1">
+        <a href="create-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
+          Create Transfer product
+        </a>
+        <a href="view-all-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
+          View Transfer productes
+        </a>
+      </div>
+    </details> -->
 
     <!-- BILLING -->
     <details class="group">

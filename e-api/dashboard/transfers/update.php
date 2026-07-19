@@ -25,11 +25,17 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
     echo json_encode([
         "status" => false,
-        "message" => "Method not allowed"
+        "message" => "Method not allowed."
     ]);
 
     exit;
 }
+
+/**
+ * ---------------------------------
+ * DATABASE
+ * ---------------------------------
+ */
 
 require_once __DIR__ . "/../../../config/dbconn.php";
 require_once __DIR__ . "/../../middleware/auth.php";
@@ -64,9 +70,16 @@ $adminId = (int)$user["id"];
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$id = (int)($data["id"] ?? 0);
-$quantity = (int)($data["quantity"] ?? 0);
+$id = isset($data["id"])
+    ? (int)$data["id"]
+    : 0;
+
+$quantity = isset($data["quantity"])
+    ? (int)$data["quantity"]
+    : 0;
+
 $status = trim($data["status"] ?? "");
+
 $remarks = trim($data["remarks"] ?? "");
 
 /**
@@ -119,128 +132,477 @@ if (!in_array($status, $allowedStatus)) {
 
 /**
  * ---------------------------------
- * CHECK TRANSFER EXISTS
+ * BEGIN TRANSACTION
  * ---------------------------------
  */
 
-$check = $conn->prepare("
-SELECT
-    id,
-    status
-FROM product_transfers
-WHERE id = ?
-LIMIT 1
-");
+$conn->begin_transaction();
 
-$check->bind_param("i", $id);
+try {
 
-$check->execute();
+    /**
+     * ---------------------------------
+     * LOAD EXISTING TRANSFER
+     * ---------------------------------
+     */
 
-$result = $check->get_result();
+    $sql = "
 
-if ($result->num_rows === 0) {
+        SELECT
 
-    echo json_encode([
-        "status" => false,
-        "message" => "Transfer not found."
-    ]);
+            id,
+            product_id,
+            store_id,
+            quantity,
+            status,
+            remarks
 
-    exit;
-}
+        FROM product_transfers
 
-$transfer = $result->fetch_assoc();
+        WHERE id = ?
 
-$check->close();
+        LIMIT 1
 
-/**
- * ---------------------------------
- * UPDATE TRANSFER
- * ---------------------------------
- */
+    ";
 
-$sql = "
+    $stmt = $conn->prepare($sql);
 
-UPDATE product_transfers
+    if (!$stmt) {
 
-SET
+        throw new Exception($conn->error);
 
-    quantity = ?,
+    }
 
-    status = ?,
+    $stmt->bind_param("i", $id);
 
-    remarks = ?,
+    $stmt->execute();
 
-    reviewed_by = ?,
+    $result = $stmt->get_result();
 
-    reviewed_at = NOW()
+    if ($result->num_rows === 0) {
 
-WHERE id = ?
+        throw new Exception("Transfer not found.");
 
-";
+    }
 
-$stmt = $conn->prepare($sql);
-
-if (!$stmt) {
-
-    http_response_code(500);
-
-    echo json_encode([
-        "status" => false,
-        "message" => "Database prepare failed.",
-        "error" => $conn->error
-    ]);
-
-    exit;
-}
-
-$stmt->bind_param(
-
-    "issii",
-
-    $quantity,
-
-    $status,
-
-    $remarks,
-
-    $adminId,
-
-    $id
-
-);
-
-if (!$stmt->execute()) {
-
-    http_response_code(500);
-
-    echo json_encode([
-        "status" => false,
-        "message" => "Failed to update transfer.",
-        "error" => $stmt->error
-    ]);
+    $transfer = $result->fetch_assoc();
 
     $stmt->close();
-    $conn->close();
 
-    exit;
+    /**
+     * ---------------------------------
+     * STORE OLD VALUES
+     * ---------------------------------
+     */
+
+    $oldStatus = $transfer["status"];
+
+    $oldQuantity = (int)$transfer["quantity"];
+
+    $productId = (int)$transfer["product_id"];
+
+    $storeId = (int)$transfer["store_id"];
+
+    /**
+     * ---------------------------------
+     * UPDATE TRANSFER
+     * ---------------------------------
+     */
+
+    $updateSql = "
+
+        UPDATE product_transfers
+
+        SET
+
+            quantity = ?,
+
+            status = ?,
+
+            remarks = ?,
+
+            reviewed_by = ?,
+
+            reviewed_at = NOW()
+
+        WHERE id = ?
+
+    ";
+
+    $updateStmt = $conn->prepare($updateSql);
+
+    if (!$updateStmt) {
+
+        throw new Exception($conn->error);
+
+    }
+
+    $updateStmt->bind_param(
+
+        "issii",
+
+        $quantity,
+
+        $status,
+
+        $remarks,
+
+        $adminId,
+
+        $id
+
+    );
+
+    if (!$updateStmt->execute()) {
+
+        throw new Exception($updateStmt->error);
+
+    }
+
+    $updateStmt->close();
+
+    /**
+     * ---------------------------------
+     * TRANSFER UPDATED
+     * ---------------------------------
+     *
+     * Variables available for Part 3:
+     *
+     * $oldStatus
+     * $status
+     * $oldQuantity
+     * $quantity
+     * $storeId
+     * $productId
+     *
+    /**
+     * ---------------------------------
+     * UPDATE STORE INVENTORY
+     * ---------------------------------
+     */
+
+    if ($oldStatus !== "accepted" && $status === "accepted") {
+
+        /*
+        |------------------------------------------
+        | First time accepting this transfer
+        |------------------------------------------
+        */
+
+        $inventorySql = "
+
+            SELECT
+
+                id,
+                quantity
+
+            FROM store_inventory
+
+            WHERE
+
+                store_id = ?
+
+            AND
+
+                product_id = ?
+
+            LIMIT 1
+
+        ";
+
+        $inventoryStmt = $conn->prepare($inventorySql);
+
+        if (!$inventoryStmt) {
+
+            throw new Exception($conn->error);
+
+        }
+
+        $inventoryStmt->bind_param(
+
+            "ii",
+
+            $storeId,
+
+            $productId
+
+        );
+
+        $inventoryStmt->execute();
+
+        $inventoryResult = $inventoryStmt->get_result();
+
+        if ($inventoryResult->num_rows > 0) {
+
+            $inventory = $inventoryResult->fetch_assoc();
+
+            $inventoryStmt->close();
+
+            $updateInventory = "
+
+                UPDATE store_inventory
+
+                SET
+
+                    quantity = quantity + ?
+
+                WHERE id = ?
+
+            ";
+
+            $inventoryStmt = $conn->prepare($updateInventory);
+
+            if (!$inventoryStmt) {
+
+                throw new Exception($conn->error);
+
+            }
+
+            $inventoryStmt->bind_param(
+
+                "ii",
+
+                $quantity,
+
+                $inventory["id"]
+
+            );
+
+            $inventoryStmt->execute();
+
+            $inventoryStmt->close();
+
+        } else {
+
+            $inventoryStmt->close();
+
+            $insertInventory = "
+
+                INSERT INTO store_inventory(
+
+                    store_id,
+
+                    product_id,
+
+                    quantity
+
+                )
+
+                VALUES(
+
+                    ?, ?, ?
+
+                )
+
+            ";
+
+            $inventoryStmt = $conn->prepare($insertInventory);
+
+            if (!$inventoryStmt) {
+
+                throw new Exception($conn->error);
+
+            }
+
+            $inventoryStmt->bind_param(
+
+                "iii",
+
+                $storeId,
+
+                $productId,
+
+                $quantity
+
+            );
+
+            $inventoryStmt->execute();
+
+            $inventoryStmt->close();
+
+        }
+
+    }
+
+    /*
+    |------------------------------------------
+    | Quantity changed after acceptance
+    |------------------------------------------
+    */
+
+    elseif ($oldStatus === "accepted" && $status === "accepted") {
+
+        $difference = $quantity - $oldQuantity;
+
+        if ($difference != 0) {
+
+            $adjustInventory = "
+
+                UPDATE store_inventory
+
+                SET quantity = quantity + ?
+
+                WHERE
+
+                    store_id = ?
+
+                AND
+
+                    product_id = ?
+
+            ";
+
+            $adjustStmt = $conn->prepare($adjustInventory);
+
+            if (!$adjustStmt) {
+
+                throw new Exception($conn->error);
+
+            }
+
+            $adjustStmt->bind_param(
+
+                "iii",
+
+                $difference,
+
+                $storeId,
+
+                $productId
+
+            );
+
+            $adjustStmt->execute();
+
+            $adjustStmt->close();
+
+        }
+
+    }
+
+    /*
+    |------------------------------------------
+    | Accepted -> Rejected
+    | Remove stock previously added
+    |------------------------------------------
+    */
+
+    elseif ($oldStatus === "accepted" && $status === "rejected") {
+
+        $removeInventory = "
+
+            UPDATE store_inventory
+
+            SET quantity = quantity - ?
+
+            WHERE
+
+                store_id = ?
+
+            AND
+
+                product_id = ?
+
+        ";
+
+        $removeStmt = $conn->prepare($removeInventory);
+
+        if (!$removeStmt) {
+
+            throw new Exception($conn->error);
+
+        }
+
+        $removeStmt->bind_param(
+
+            "iii",
+
+            $oldQuantity,
+
+            $storeId,
+
+            $productId
+
+        );
+
+        $removeStmt->execute();
+
+        $removeStmt->close();
+
+    }
+
+    /**
+     * ---------------------------------
+     * NEXT:
+     * Part 4
+     * Commit Transaction
+     * Return JSON
+     * Rollback on Error
+     * ---------------------------------
+     */
+
+    /**
+     * ---------------------------------
+     * COMMIT TRANSACTION
+     * ---------------------------------
+     */
+
+    $conn->commit();
+
+    /**
+     * ---------------------------------
+     * SUCCESS RESPONSE
+     * ---------------------------------
+     */
+
+    echo json_encode([
+
+        "status" => true,
+
+        "message" => "Transfer updated successfully.",
+
+        "data" => [
+
+            "id" => $id,
+
+            "status" => $status,
+
+            "quantity" => $quantity
+
+        ]
+
+    ]);
+
+} catch (Exception $e) {
+
+    /**
+     * ---------------------------------
+     * ROLLBACK
+     * ---------------------------------
+     */
+
+    $conn->rollback();
+
+    http_response_code(500);
+
+    echo json_encode([
+
+        "status" => false,
+
+        "message" => "Transfer update failed.",
+
+        "error" => $e->getMessage()
+
+    ]);
+
 }
-
-$stmt->close();
-
-$conn->close();
 
 /**
  * ---------------------------------
- * RESPONSE
+ * CLOSE DATABASE
  * ---------------------------------
  */
 
-echo json_encode([
-
-    "status" => true,
-
-    "message" => "Transfer updated successfully."
-
-]);
+$conn->close();
 
 exit;

@@ -131,25 +131,25 @@
       </div>
     </details>
     <!-- Transfer product -->
-    <!-- <details class="group">
+    <details class="group">
       <summary
         class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
         <span class="flex items-center gap-3">
           <i class="ph-bold ph-book-open text-lg"></i>
-          Transfer product QR Code
+          Order product
         </span>
         <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
       </summary>
 
       <div class="ml-8 mt-2 space-y-1">
         <a href="create-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
-          Create Transfer product
+          Create order
         </a>
         <a href="view-all-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
-          View Transfer productes
+          View order
         </a>
       </div>
-    </details> -->
+    </details>
 
     <!-- BILLING -->
     <details class="group">

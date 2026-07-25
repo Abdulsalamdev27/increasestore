@@ -11,7 +11,7 @@ $userEmail = htmlspecialchars($authUser['email'] ?? 'Account');
 
         <a href="/Einvite/index.php"
           class="text-2xl font-bold text-color-two font-title">
-          E-invite
+          Increase store
         </a>
       </div>
 

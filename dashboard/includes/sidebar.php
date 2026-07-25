@@ -43,6 +43,7 @@
         <i class="ph-bold ph-house-simple text-lg"></i>
         <span>Dashboard</span>
       </a>
+      
     </div>
 
     <!-- EVENT -->
@@ -110,6 +111,16 @@
       </div>
     </details>
 
+    <div>
+      <!-- <p class="text-xs uppercase text-gray-400 mb-2">Main</p> -->
+
+      <a href="accepted-products.php"
+        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100">
+        <i class="ph-bold ph-house-simple text-lg"></i>
+        <span>Search</span>
+      </a>
+      
+    </div>
     <!-- Transfer product -->
     <details class="group">
       <summary
@@ -131,43 +142,22 @@
       </div>
     </details>
     <!-- Transfer product -->
-    <!-- <details class="group">
-      <summary
-        class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
-        <span class="flex items-center gap-3">
-          <i class="ph-bold ph-book-open text-lg"></i>
-          Transfer product QR Code
-        </span>
-        <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
-      </summary>
-
-      <div class="ml-8 mt-2 space-y-1">
-        <a href="create-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
-          Create Transfer product
-        </a>
-        <a href="view-all-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
-          View Transfer productes
-        </a>
-      </div>
-    </details> -->
-
-    <!-- BILLING -->
     <details class="group">
       <summary
         class="flex items-center justify-between cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100">
         <span class="flex items-center gap-3">
-          <i class="ph-bold ph-credit-card text-lg"></i>
-          Billing
+          <i class="ph-bold ph-book-open text-lg"></i>
+          Order product
         </span>
         <i class="ph-bold ph-caret-down group-open:rotate-180 transition"></i>
       </summary>
 
       <div class="ml-8 mt-2 space-y-1">
-        <a href="subscribe.php" class="block py-1 text-sm hover:text-blue-600">
-          Subscribe
+        <a href="create-order.php" class="block py-1 text-sm hover:text-blue-600">
+          Create order
         </a>
-        <a href="billing-history.php" class="block py-1 text-sm hover:text-blue-600">
-          History
+        <a href="view-all-Transfer product.php" class="block py-1 text-sm hover:text-blue-600">
+          View order
         </a>
       </div>
     </details>

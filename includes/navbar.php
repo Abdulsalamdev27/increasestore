@@ -43,7 +43,7 @@
     <!-- Top bar -->
     <div class="flex items-center justify-between">
       <a href="index.php" class="text-xl font-title font-bold">
-        E-Invite
+        Increase original suppiler store
       </a>
 
       <button id="menuBtn" class="text-2xl focus:outline-none">

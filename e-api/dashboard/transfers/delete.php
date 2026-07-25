@@ -4,9 +4,9 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 /**
- * -------------------------
+ * ---------------------------------------
  * HEADERS
- * -------------------------
+ * ---------------------------------------
  */
 
 header("Content-Type: application/json");
@@ -14,33 +14,39 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     http_response_code(200);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
     http_response_code(405);
 
     echo json_encode([
         "status" => false,
-        "message" => "Method not allowed"
+        "message" => "Method not allowed."
     ]);
 
     exit;
 }
 
+/**
+ * ---------------------------------------
+ * DATABASE
+ * ---------------------------------------
+ */
+
 require_once __DIR__ . "/../../../config/dbconn.php";
 require_once __DIR__ . "/../../middleware/auth.php";
 
 /**
- * -------------------------
- * AUTH USER
- * -------------------------
+ * ---------------------------------------
+ * AUTHENTICATION
+ * ---------------------------------------
  */
 
-$user = $GLOBALS['authUser'] ?? null;
+$adminId = (int)$user["user_id"];
 
 if (!$user) {
 
@@ -48,21 +54,44 @@ if (!$user) {
 
     echo json_encode([
         "status" => false,
-        "message" => "Unauthorized"
+        "message" => "Unauthorized."
     ]);
 
     exit;
 }
 
+$user = $GLOBALS["authUser"] ?? null;
+
+if (!$user) {
+
+    http_response_code(401);
+
+    echo json_encode([
+        "status" => false,
+        "message" => "Unauthorized."
+    ]);
+
+    exit;
+}
+
+$adminId = (int)$user["admin_id"];
 /**
- * -------------------------
- * REQUEST DATA
- * -------------------------
+ * ---------------------------------------
+ * REQUEST BODY
+ * ---------------------------------------
  */
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$id = (int)($data["id"] ?? 0);
+$id = isset($data["id"])
+    ? (int)$data["id"]
+    : 0;
+
+/**
+ * ---------------------------------------
+ * VALIDATION
+ * ---------------------------------------
+ */
 
 if ($id <= 0) {
 
@@ -77,106 +106,363 @@ if ($id <= 0) {
 }
 
 /**
- * -------------------------
- * CHECK TRANSFER EXISTS
- * -------------------------
+ * ---------------------------------------
+ * BEGIN TRANSACTION
+ * ---------------------------------------
  */
 
-$check = $conn->prepare("
-SELECT id
-FROM product_transfers
-WHERE id = ?
-LIMIT 1
-");
+$conn->begin_transaction();
 
-if (!$check) {
+try {
 
-    http_response_code(500);
+    /**
+     * ---------------------------------------
+     * LOAD TRANSFER
+     * ---------------------------------------
+     */
 
-    echo json_encode([
-        "status" => false,
-        "message" => "Database prepare failed.",
-        "error" => $conn->error
-    ]);
+    $sql = "
 
-    exit;
-}
+        SELECT
+            id,
+            product_id,
+            store_id,
+            quantity,
+            status
 
-$check->bind_param("i", $id);
+        FROM product_transfers
 
-$check->execute();
+        WHERE id = ?
 
-$result = $check->get_result();
+        LIMIT 1
 
-if ($result->num_rows === 0) {
+    ";
 
-    $check->close();
-    $conn->close();
+    $stmt = $conn->prepare($sql);
 
-    echo json_encode([
-        "status" => false,
-        "message" => "Transfer not found."
-    ]);
+    if (!$stmt) {
 
-    exit;
-}
+        throw new Exception($conn->error);
 
-$check->close();
+    }
 
-/**
- * -------------------------
- * DELETE TRANSFER
- * -------------------------
- */
+    $stmt->bind_param("i", $id);
 
-$stmt = $conn->prepare("
-DELETE FROM product_transfers
-WHERE id = ?
-");
+    $stmt->execute();
 
-if (!$stmt) {
+    $result = $stmt->get_result();
 
-    http_response_code(500);
+    if ($result->num_rows === 0) {
 
-    echo json_encode([
-        "status" => false,
-        "message" => "Database prepare failed.",
-        "error" => $conn->error
-    ]);
+        throw new Exception("Transfer not found.");
 
-    exit;
-}
+    }
 
-$stmt->bind_param("i", $id);
-
-if (!$stmt->execute()) {
-
-    http_response_code(500);
-
-    echo json_encode([
-        "status" => false,
-        "message" => "Failed to delete transfer.",
-        "error" => $stmt->error
-    ]);
+    $transfer = $result->fetch_assoc();
 
     $stmt->close();
-    $conn->close();
-
-    exit;
-}
-
-$stmt->close();
-$conn->close();
 
 /**
- * -------------------------
- * RESPONSE
- * -------------------------
+ * ---------------------------------------
+ * DELETE RULES
+ * ---------------------------------------
  */
 
+/*
+|--------------------------------------------------------------------------
+| Prevent deleting accepted transfers
+|--------------------------------------------------------------------------
+|
+| If you prefer to allow deletion of accepted transfers,
+| remove this block and adjust the inventory first.
+|
+*/
+
+if ($transfer["status"] === "accepted") {
+
+    throw new Exception(
+        "Accepted transfers cannot be deleted. Reject or return the transfer instead."
+    );
+
+}
+
+/**
+ * ---------------------------------------
+ * DELETE TRANSFER
+ * ---------------------------------------
+ */
+
+$deleteSql = "
+
+    DELETE FROM product_transfers
+
+    WHERE id = ?
+
+    LIMIT 1
+
+";
+
+$deleteStmt = $conn->prepare($deleteSql);
+
+if (!$deleteStmt) {
+
+    throw new Exception($conn->error);
+
+}
+
+$deleteStmt->bind_param(
+
+    "i",
+
+    $id
+
+);
+
+if (!$deleteStmt->execute()) {
+
+    throw new Exception($deleteStmt->error);
+
+}
+
+$deleteStmt->close();
+
+/**
+ * ---------------------------------------
+ * INVENTORY HANDLING
+ * ---------------------------------------
+ */
+
+if ($transfer["status"] === "accepted") {
+
+    /**
+     * ---------------------------------------
+     * CHECK STORE INVENTORY
+     * ---------------------------------------
+     */
+
+    $inventorySql = "
+
+        SELECT
+            id,
+            quantity
+
+        FROM store_inventory
+
+        WHERE
+            store_id = ?
+        AND
+            product_id = ?
+
+        LIMIT 1
+
+    ";
+
+    $inventoryStmt = $conn->prepare($inventorySql);
+
+    if (!$inventoryStmt) {
+
+        throw new Exception($conn->error);
+
+    }
+
+    $inventoryStmt->bind_param(
+
+        "ii",
+
+        $transfer["store_id"],
+
+        $transfer["product_id"]
+
+    );
+
+    $inventoryStmt->execute();
+
+    $inventoryResult = $inventoryStmt->get_result();
+
+    if ($inventoryResult->num_rows === 0) {
+
+        throw new Exception("Store inventory record not found.");
+
+    }
+
+    $inventory = $inventoryResult->fetch_assoc();
+
+    $inventoryStmt->close();
+
+    /**
+     * ---------------------------------------
+     * ENSURE SUFFICIENT STOCK
+     * ---------------------------------------
+     */
+
+    if ($inventory["quantity"] < $transfer["quantity"]) {
+
+        throw new Exception(
+            "Cannot delete transfer because inventory quantity is insufficient."
+        );
+
+    }
+
+    /**
+     * ---------------------------------------
+     * REMOVE INVENTORY
+     * ---------------------------------------
+     */
+
+    $updateInventorySql = "
+
+        UPDATE store_inventory
+
+        SET
+            quantity = quantity - ?
+
+        WHERE
+            store_id = ?
+        AND
+            product_id = ?
+
+    ";
+
+    $updateInventoryStmt = $conn->prepare($updateInventorySql);
+
+    if (!$updateInventoryStmt) {
+
+        throw new Exception($conn->error);
+
+    }
+
+    $updateInventoryStmt->bind_param(
+
+        "iii",
+
+        $transfer["quantity"],
+
+        $transfer["store_id"],
+
+        $transfer["product_id"]
+
+    );
+
+    if (!$updateInventoryStmt->execute()) {
+
+        throw new Exception($updateInventoryStmt->error);
+
+    }
+
+    $updateInventoryStmt->close();
+
+}
+
+/**
+ * ---------------------------------------
+ * DELETE TRANSFER
+ * ---------------------------------------
+ */
+
+$deleteSql = "
+
+    DELETE FROM product_transfers
+
+    WHERE id = ?
+
+    LIMIT 1
+
+";
+
+$deleteStmt = $conn->prepare($deleteSql);
+
+if (!$deleteStmt) {
+
+    throw new Exception($conn->error);
+
+}
+
+$deleteStmt->bind_param(
+
+    "i",
+
+    $id
+
+);
+
+if (!$deleteStmt->execute()) {
+
+    throw new Exception($deleteStmt->error);
+
+}
+
+$deleteStmt->close();
+
+/**
+ * ---------------------------------------
+ * COMMIT TRANSACTION
+ * ---------------------------------------
+ */
+
+$conn->commit();
+
+/**
+ * ---------------------------------------
+ * SUCCESS RESPONSE
+ * ---------------------------------------
+ */
+
+http_response_code(200);
+
 echo json_encode([
+
     "status" => true,
-    "message" => "Transfer deleted successfully."
+
+    "message" => "Transfer deleted successfully.",
+
+    "data" => [
+
+        "id" => $id
+
+    ]
+
 ]);
+
+} catch (Exception $e) {
+
+    /**
+     * ---------------------------------------
+     * ROLLBACK TRANSACTION
+     * ---------------------------------------
+     */
+
+    if ($conn) {
+
+        $conn->rollback();
+
+    }
+
+    http_response_code(500);
+
+    echo json_encode([
+
+        "status" => false,
+
+        "message" => "Failed to delete transfer.",
+
+        "error" => $e->getMessage()
+
+    ]);
+
+} finally {
+
+    /**
+     * ---------------------------------------
+     * CLOSE DATABASE CONNECTION
+     * ---------------------------------------
+     */
+
+    if ($conn) {
+
+        $conn->close();
+
+    }
+
+}
 
 exit;

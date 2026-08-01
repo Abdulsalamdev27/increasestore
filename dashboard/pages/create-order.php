@@ -2589,7 +2589,7 @@ function updateTotals() {
 
 /*
 |--------------------------------------------------------------------------
-| Add Product To Cart Button
+| ADD PRODUCT TO CART
 |--------------------------------------------------------------------------
 */
 
@@ -2597,19 +2597,22 @@ $(document).on("click", ".addToCart", function () {
 
     console.log("Add button clicked");
 
-    const productId = $(this).data("id");
+    const productId = Number($(this).data("id"));
 
     console.log("Product ID:", productId);
 
 
-    const product = products.find(function(item){
+    const product = products.find(function (item) {
 
-        return Number(item.inventory_id) === Number(productId);
+        return Number(item.inventory_id) === productId;
 
     });
 
 
     console.log("Selected Product:", product);
+
+console.log("Full Product:", product);
+console.log("All Keys:", Object.keys(product || {}));
 
 
     if (!product) {
@@ -2624,10 +2627,15 @@ $(document).on("click", ".addToCart", function () {
     }
 
 
+    console.log("Product Name:", product.name);
+    console.log("Selling Price:", product.selling_price);
+    console.log("Quantity:", product.quantity);
+    console.log("Full Product:", product);
+
+
     const existing = getCartItem(product.inventory_id);
 
 
-    // Prevent duplicate product
     if (existing) {
 
         showMessage(
@@ -2640,31 +2648,50 @@ $(document).on("click", ".addToCart", function () {
     }
 
 
-    cart.push({
+    const cartItem = {
 
         inventory_id: product.inventory_id,
 
-        name: product.name,
+        name: product.product?.name || "",
 
-        barcode: product.barcode,
+        barcode: product.product?.barcode || "",
 
-        selling_price: product.selling_price,
+        selling_price: Number(product.product?.selling_price) || 0,
 
-        available_quantity: product.quantity,
+        available_quantity: Number(product.quantity) || 0,
 
-        quantity: 1
+        quantity: 1,
 
-    });
+        store_name: product.store?.name || ""
 
+    };
+
+
+    console.log("Cart Item:", cartItem);
+
+
+    cart.push(cartItem);
 
     console.log("Updated Cart:", cart);
 
 
     saveCart();
 
-    renderCart();
 
-    updateTotals();
+    if (typeof renderCart === "function") {
+
+        console.log("Calling renderCart()");
+
+        renderCart();
+
+    } else {
+
+        console.error("renderCart is not defined");
+
+    }
+
+
+    updateSummary();
 
 
     showMessage(
@@ -2786,7 +2813,7 @@ function renderCart() {
 
     updateSummary();
 
-} 
+}  
 
 /*
 |--------------------------------------------------------------------------

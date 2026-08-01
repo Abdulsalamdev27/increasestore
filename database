@@ -223,6 +223,52 @@ CREATE TABLE order_items (
 
 
 
+CREATE TABLE customers (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    customer_code VARCHAR(30) NOT NULL UNIQUE,
+
+    full_name VARCHAR(150) NOT NULL,
+
+    phone VARCHAR(20) NOT NULL UNIQUE,
+
+    email VARCHAR(150) DEFAULT NULL UNIQUE,
+
+    address TEXT DEFAULT NULL,
+
+    city VARCHAR(100) DEFAULT NULL,
+
+    state VARCHAR(100) DEFAULT NULL,
+
+    country VARCHAR(100) DEFAULT 'Nigeria',
+
+    total_orders INT UNSIGNED DEFAULT 0,
+
+    total_spent DECIMAL(15,2) DEFAULT 0.00,
+
+    last_purchase DATETIME DEFAULT NULL,
+
+    notes TEXT DEFAULT NULL,
+
+    status ENUM('active','inactive') DEFAULT 'active',
+
+    created_by INT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_customer_code (customer_code),
+    INDEX idx_name (full_name),
+    INDEX idx_phone (phone),
+    INDEX idx_email (email)
+
+    -- Optional
+    -- FOREIGN KEY (created_by)
+    -- REFERENCES admins(id)
+    -- ON DELETE RESTRICT
+);
 
 
 

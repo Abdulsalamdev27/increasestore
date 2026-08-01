@@ -4,92 +4,186 @@ require_once __DIR__ . "/../includes/header.php";
 
 <section class="w-full">
 
-    <!-- ===================================== -->
+    <!-- ========================================= -->
     <!-- PAGE HEADER -->
-    <!-- ===================================== -->
+    <!-- ========================================= -->
 
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
+    <article class="mb-6">
 
-        <div>
+        <div class="flex items-center justify-between">
 
-            <h1 class="text-3xl font-bold text-gray-800">
-                Create Order
-            </h1>
+            <div>
 
-            <p class="text-gray-500 mt-2">
-                Create a customer order using accepted products available in your inventory.
-            </p>
+                <h1 class="text-2xl font-bold font-title">
+                    Create Order
+                </h1>
+
+                <p class="text-gray-500 mt-1">
+                    Create a new customer order and generate receipt.
+                </p>
+
+            </div>
+
+            <div class="flex gap-3">
+
+                <button
+                    id="refreshProducts"
+                    class="px-5 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition">
+
+                    Refresh Products
+
+                </button>
+
+                <button
+                    id="clearOrder"
+                    class="px-5 py-3 rounded-xl bg-red-500 text-white hover:bg-red-600 transition">
+
+                    Clear Order
+
+                </button>
+
+            </div>
 
         </div>
 
-        <div class="flex flex-wrap gap-3">
+    </article>
 
-            <a
-                href="orders.php"
-                class="px-5 py-3 rounded-xl border border-gray-300 hover:bg-gray-100 transition">
-
-                View Orders
-
-            </a>
-
-            <button
-                type="button"
-                id="refreshProducts"
-                class="px-5 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition">
-
-                Refresh Products
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <!-- ===================================== -->
-    <!-- RESPONSE BOX -->
-    <!-- ===================================== -->
+    <!-- ========================================= -->
+    <!-- RESPONSE MESSAGE -->
+    <!-- ========================================= -->
 
     <div
         id="responseBox"
-        class="hidden rounded-xl px-5 py-4 mb-6 text-sm font-medium">
+        class="hidden mb-6 rounded-xl px-5 py-4 text-sm font-medium">
     </div>
 
-    <!-- ===================================== -->
-    <!-- CUSTOMER INFORMATION -->
-    <!-- ===================================== -->
+    <!-- ========================================= -->
+    <!-- ORDER STATISTICS -->
+    <!-- ========================================= -->
 
-    <div
-        class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
+    <article
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
 
-        <div class="border-b px-6 py-5">
+        <!-- Products -->
 
-            <h2 class="text-xl font-semibold">
-                Customer Information
+        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
+
+            <p class="text-sm text-gray-500">
+                Products in Cart
+            </p>
+
+            <h2
+                id="cartItemsCount"
+                class="text-3xl font-bold mt-2 text-indigo-600">
+
+                0
+
             </h2>
 
-            <p class="text-gray-500 text-sm mt-1">
-                Enter the customer's details before adding products.
+        </div>
+
+        <!-- Quantity -->
+
+        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
+
+            <p class="text-sm text-gray-500">
+                Total Quantity
+            </p>
+
+            <h2
+                id="cartQuantity"
+                class="text-3xl font-bold mt-2 text-green-600">
+
+                0
+
+            </h2>
+
+        </div>
+
+        <!-- Total -->
+
+        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
+
+            <p class="text-sm text-gray-500">
+                Order Total
+            </p>
+
+            <h2
+                id="cartTotal"
+                class="text-3xl font-bold mt-2 text-blue-600">
+
+                ₦0.00
+
+            </h2>
+
+        </div>
+
+        <!-- Balance -->
+
+        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
+
+            <p class="text-sm text-gray-500">
+                Balance Due
+            </p>
+
+            <h2
+                id="balanceDue"
+                class="text-3xl font-bold mt-2 text-red-600">
+
+                ₦0.00
+
+            </h2>
+
+        </div>
+
+    </article>
+
+    <!-- ========================================= -->
+    <!-- CUSTOMER INFORMATION -->
+    <!-- ========================================= -->
+
+    <article
+        class="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+
+        <!-- Header -->
+
+        <div class="border-b border-gray-200 px-6 py-5">
+
+            <h2 class="text-lg font-semibold">
+
+                Customer Information
+
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-1">
+
+                Enter customer details before creating the order.
+
             </p>
 
         </div>
 
+        <!-- Body -->
+
         <div class="p-6">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="grid lg:grid-cols-2 gap-6">
 
                 <!-- Customer Name -->
 
                 <div>
 
                     <label class="block text-sm font-medium mb-2">
-                        Customer Name <span class="text-red-500">*</span>
+
+                        Customer Name *
+
                     </label>
 
                     <input
                         type="text"
-                        id="customer_name"
-                        class="input"
-                        placeholder="John Doe">
+                        id="customerName"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Enter customer name">
 
                 </div>
 
@@ -98,13 +192,15 @@ require_once __DIR__ . "/../includes/header.php";
                 <div>
 
                     <label class="block text-sm font-medium mb-2">
-                        Phone Number <span class="text-red-500">*</span>
+
+                        Phone Number *
+
                     </label>
 
                     <input
                         type="text"
-                        id="customer_phone"
-                        class="input"
+                        id="customerPhone"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
                         placeholder="08012345678">
 
                 </div>
@@ -114,138 +210,76 @@ require_once __DIR__ . "/../includes/header.php";
                 <div>
 
                     <label class="block text-sm font-medium mb-2">
+
                         Email Address
+
                     </label>
 
                     <input
                         type="email"
-                        id="customer_email"
-                        class="input"
+                        id="customerEmail"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
                         placeholder="customer@email.com">
 
                 </div>
 
-                <!-- Payment Method -->
+                <!-- Payment -->
 
                 <div>
 
                     <label class="block text-sm font-medium mb-2">
-                        Payment Method
+
+                        Payment Method *
+
                     </label>
 
                     <select
-                        id="payment_method"
-                        class="input">
+                        id="paymentMethod"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
 
-                        <option value="cash">
+                        <option value="">
+                            Select Payment Method
+                        </option>
+
+                        <option value="Cash">
                             Cash
                         </option>
 
-                        <option value="transfer">
-                            Bank Transfer
-                        </option>
-
-                        <option value="card">
-                            Card
-                        </option>
-
-                        <option value="pos">
+                        <option value="POS">
                             POS
                         </option>
 
-                    </select>
-
-                </div>
-
-                <!-- Payment Status -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-                        Payment Status
-                    </label>
-
-                    <select
-                        id="payment_status"
-                        class="input">
-
-                        <option value="paid">
-                            Paid
+                        <option value="Transfer">
+                            Bank Transfer
                         </option>
 
-                        <option value="unpaid">
-                            Unpaid
+                        <option value="Card">
+                            Card
                         </option>
 
-                        <option value="partial">
-                            Partially Paid
+                        <option value="Credit">
+                            Credit
                         </option>
 
                     </select>
-
-                </div>
-
-                <!-- Order Number -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-                        Order Number
-                    </label>
-
-                    <input
-                        type="text"
-                        id="order_number"
-                        class="input bg-gray-100"
-                        readonly>
-
-                </div>
-
-                <!-- Order Date -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-                        Order Date
-                    </label>
-
-                    <input
-                        type="datetime-local"
-                        id="order_date"
-                        class="input">
-
-                </div>
-
-                <!-- Sales Person -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-                        Sales Person
-                    </label>
-
-                    <input
-                        type="text"
-                        id="cashier_name"
-                        class="input bg-gray-100"
-                        readonly
-                        value="<?php echo htmlspecialchars($_SESSION['admin_name'] ?? 'Administrator'); ?>">
 
                 </div>
 
                 <!-- Notes -->
 
-                <div class="md:col-span-2 xl:col-span-3">
+                <div class="lg:col-span-2">
 
                     <label class="block text-sm font-medium mb-2">
-                        Order Notes
+
+                        Notes
+
                     </label>
 
                     <textarea
-                        id="order_notes"
+                        id="orderNotes"
                         rows="4"
-                        class="input resize-none"
-                        placeholder="Optional notes for this order..."></textarea>
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Additional order notes..."></textarea>
 
                 </div>
 
@@ -253,44 +287,40 @@ require_once __DIR__ . "/../includes/header.php";
 
         </div>
 
-    </div>
+    </article>
 
-    <!-- ===================================== -->
+
+    <!-- ===================================================== -->
     <!-- PRODUCT SEARCH -->
-    <!-- ===================================== -->
+    <!-- ===================================================== -->
 
-    <div
-        class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden mt-8">
+    <section class="bg-white rounded-2xl shadow border border-gray-200 mt-8">
 
         <div class="border-b px-6 py-5">
 
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div class="flex items-center justify-between">
 
                 <div>
 
-                    <h2 class="text-xl font-semibold">
-                        Accepted Products
+                    <h2 class="text-lg font-semibold">
+
+                        Search Products
+
                     </h2>
 
                     <p class="text-sm text-gray-500 mt-1">
-                        Search products and add them to the shopping cart.
+
+                        Search products by name, barcode or category.
+
                     </p>
 
                 </div>
 
-                <div class="flex items-center gap-3">
-
-                    <span
-                        id="availableCount"
-                        class="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
-
-                        0 Available
-
-                    </span>
+                <div>
 
                     <span
                         id="productCount"
-                        class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold">
+                        class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-semibold">
 
                         0 Products
 
@@ -304,162 +334,73 @@ require_once __DIR__ . "/../includes/header.php";
 
         <div class="p-6">
 
-            <!-- ================================ -->
-            <!-- SEARCH ROW -->
-            <!-- ================================ -->
-
             <div class="grid lg:grid-cols-4 gap-5">
-
-                <!-- Product Search -->
 
                 <div>
 
-                    <label class="block text-sm font-medium mb-2">
-                        Search Product
+                    <label class="block mb-2 font-medium text-sm">
+
+                        Search
+
                     </label>
 
                     <input
                         type="text"
                         id="productSearch"
-                        class="input"
-                        placeholder="Product name, SKU or barcode">
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                        placeholder="Search Product">
 
                 </div>
 
-                <!-- Barcode -->
-
                 <div>
 
-                    <label class="block text-sm font-medium mb-2">
-                        Barcode Scanner
+                    <label class="block mb-2 font-medium text-sm">
+
+                        Barcode
+
                     </label>
 
                     <input
                         type="text"
                         id="barcodeSearch"
-                        autocomplete="off"
-                        class="input"
-                        placeholder="Scan barcode">
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                        placeholder="Scan Barcode">
 
                 </div>
 
-                <!-- Category -->
-
                 <div>
 
-                    <label class="block text-sm font-medium mb-2">
+                    <label class="block mb-2 font-medium text-sm">
+
                         Category
+
                     </label>
 
                     <select
                         id="categoryFilter"
-                        class="input">
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
 
-                        <option value="">
-                            All Categories
-                        </option>
+                        <option value="">All Categories</option>
 
                     </select>
 
                 </div>
 
-                <!-- Stock -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-                        Stock
-                    </label>
-
-                    <select
-                        id="stockFilter"
-                        class="input">
-
-                        <option value="">
-                            All Products
-                        </option>
-
-                        <option value="available">
-                            Available Only
-                        </option>
-
-                        <option value="low">
-                            Low Stock
-                        </option>
-
-                        <option value="out">
-                            Out Of Stock
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-            <!-- ================================ -->
-            <!-- SECOND ROW -->
-            <!-- ================================ -->
-
-            <div class="grid lg:grid-cols-3 gap-5 mt-5">
-
-                <!-- Sort -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-                        Sort Products
-                    </label>
-
-                    <select
-                        id="sortProducts"
-                        class="input">
-
-                        <option value="name">
-                            Product Name
-                        </option>
-
-                        <option value="price">
-                            Selling Price
-                        </option>
-
-                        <option value="quantity">
-                            Quantity
-                        </option>
-
-                        <option value="created">
-                            Latest Products
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <!-- Refresh -->
-
-                <div class="flex items-end">
+                <div class="flex items-end gap-3">
 
                     <button
-                        type="button"
-                        id="refreshProducts"
-                        class="w-full px-5 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition">
+                        id="searchBtn"
+                        class="flex-1 py-3 rounded-xl bg-indigo-600 text-white">
 
-                        Refresh Products
+                        Search
 
                     </button>
 
-                </div>
-
-                <!-- Clear -->
-
-                <div class="flex items-end">
-
                     <button
-                        type="button"
                         id="clearSearch"
-                        class="w-full px-5 py-3 rounded-xl bg-red-500 text-white hover:bg-red-600 transition">
+                        class="flex-1 py-3 rounded-xl bg-red-500 text-white">
 
-                        Clear Search
+                        Clear
 
                     </button>
 
@@ -467,850 +408,61 @@ require_once __DIR__ . "/../includes/header.php";
 
             </div>
 
-            <!-- ================================ -->
-            <!-- PRODUCT PREVIEW -->
-            <!-- ================================ -->
-
-            <div
-                id="selectedProductCard"
-                class="hidden mt-8 rounded-2xl border border-indigo-200 bg-indigo-50 p-6">
-
-                <div class="flex justify-between items-center">
-
-                    <div>
-
-                        <h3
-                            id="selectedProductName"
-                            class="text-xl font-semibold">
-
-                            Product Name
-
-                        </h3>
-
-                        <p
-                            id="selectedProductBarcode"
-                            class="text-gray-500 mt-1">
-
-                            Barcode
-
-                        </p>
-
-                    </div>
-
-                    <div class="text-right">
-
-                        <div
-                            id="selectedProductPrice"
-                            class="text-2xl font-bold text-green-600">
-
-                            ₦0.00
-
-                        </div>
-
-                        <div
-                            id="selectedProductQty"
-                            class="text-sm text-gray-500 mt-2">
-
-                            Qty : 0
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- ================================ -->
-            <!-- LOADER -->
-            <!-- ================================ -->
-
-            <div
-                id="productLoader"
-                class="hidden py-12 text-center">
-
-                <svg
-                    class="animate-spin h-10 w-10 mx-auto text-indigo-600"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24">
-
-                    <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4">
-                    </circle>
-
-                    <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4A10 10 0 002 12h2z">
-                    </path>
-
-                </svg>
-
-                <p class="text-gray-500 mt-4">
-
-                    Loading accepted products...
-
-                </p>
-
-            </div>
-
         </div>
 
-    </div>
-    <!-- ===================================== -->
-    <!-- AVAILABLE PRODUCTS TABLE -->
-    <!-- ===================================== -->
+    </section>
 
-    <div
-        class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden mt-8">
 
-        <div
-            class="px-6 py-5 border-b flex items-center justify-between">
 
-            <div>
+    <!-- ===================================================== -->
+    <!-- PRODUCTS TABLE -->
+    <!-- ===================================================== -->
 
-                <h2 class="text-xl font-semibold">
+    <section
+        class="bg-white rounded-2xl shadow border border-gray-200 mt-8 overflow-hidden">
 
-                    Available Products
+        <div class="border-b px-6 py-4">
 
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-1">
-
-                    Products approved for sale in this store.
-
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="overflow-x-auto">
-
-            <table class="min-w-full">
-
-                <thead class="bg-gray-100">
-
-                    <tr>
-
-                        <th class="px-5 py-4 text-left font-semibold">
-                            Product
-                        </th>
-
-                        <th class="px-5 py-4 text-left font-semibold">
-                            Barcode
-                        </th>
-
-                        <th class="px-5 py-4 text-left font-semibold">
-                            SKU
-                        </th>
-
-                        <th class="px-5 py-4 text-left font-semibold">
-                            Category
-                        </th>
-
-                        <th class="px-5 py-4 text-center font-semibold">
-                            Qty
-                        </th>
-
-                        <th class="px-5 py-4 text-right font-semibold">
-                            Price
-                        </th>
-
-                        <th class="px-5 py-4 text-center font-semibold">
-                            Status
-                        </th>
-
-                        <th class="px-5 py-4 text-center font-semibold">
-                            Action
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="productsTable">
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            class="text-center py-12 text-gray-500">
-
-                            Loading accepted products...
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <!-- Pagination -->
-
-        <div
-            class="px-6 py-4 border-t flex items-center justify-between">
-
-            <div
-                id="paginationInfo"
-                class="text-sm text-gray-500">
-
-                Showing 0 of 0 products
-
-            </div>
-
-            <div
-                id="paginationButtons"
-                class="flex gap-2">
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ===================================== -->
-    <!-- SHOPPING CART -->
-    <!-- ===================================== -->
-
-    <div
-        class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden mt-8">
-
-        <!-- Header -->
-
-        <div
-            class="px-6 py-5 border-b flex justify-between items-center">
-
-            <div>
-
-                <h2 class="text-xl font-semibold">
-
-                    Shopping Cart
-
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-1">
-
-                    Products selected for this order.
-
-                </p>
-
-            </div>
-
-            <div class="flex items-center gap-3">
-
-                <span
-                    id="cartCount"
-                    class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-semibold">
-
-                    0 Items
-
-                </span>
-
-                <button
-                    type="button"
-                    id="clearCartBtn"
-                    class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white">
-
-                    Clear Cart
-
-                </button>
-
-            </div>
-
-        </div>
-
-        <!-- Cart Table -->
-
-        <div class="overflow-x-auto">
-
-            <table class="min-w-full">
-
-                <thead class="bg-gray-100">
-
-                    <tr>
-
-                        <th class="px-5 py-4 text-left">
-
-                            Product
-
-                        </th>
-
-                        <th class="px-5 py-4 text-left">
-
-                            Barcode
-
-                        </th>
-
-                        <th class="px-5 py-4 text-center">
-
-                            Quantity
-
-                        </th>
-
-                        <th class="px-5 py-4 text-right">
-
-                            Unit Price
-
-                        </th>
-
-                        <th class="px-5 py-4 text-right">
-
-                            Total
-
-                        </th>
-
-                        <th class="px-5 py-4 text-center">
-
-                            Action
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="cartTable">
-
-                    <tr id="emptyCartRow">
-
-                        <td
-                            colspan="6"
-                            class="text-center py-12 text-gray-500">
-
-                            No products added to cart.
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <!-- Cart Summary -->
-
-        <div
-            class="border-t bg-gray-50 px-6 py-6">
-
-            <div class="grid lg:grid-cols-3 gap-5">
-
-                <div
-                    class="bg-white rounded-xl border p-5">
-
-                    <p class="text-gray-500 text-sm">
-
-                        Total Items
-
-                    </p>
-
-                    <h2
-                        id="totalItems"
-                        class="text-3xl font-bold mt-2">
-
-                        0
-
-                    </h2>
-
-                </div>
-
-                <div
-                    class="bg-white rounded-xl border p-5">
-
-                    <p class="text-gray-500 text-sm">
-
-                        Total Quantity
-
-                    </p>
-
-                    <h2
-                        id="totalQuantity"
-                        class="text-3xl font-bold mt-2">
-
-                        0
-
-                    </h2>
-
-                </div>
-
-                <div
-                    class="bg-white rounded-xl border p-5">
-
-                    <p class="text-gray-500 text-sm">
-
-                        Cart Total
-
-                    </p>
-
-                    <h2
-                        id="cartTotal"
-                        class="text-3xl font-bold text-green-600 mt-2">
-
-                        ₦0.00
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ===================================== -->
-    <!-- CART ROW TEMPLATE -->
-    <!-- Hidden -->
-    <!-- ===================================== -->
-
-    <table class="hidden">
-
-        <tbody>
-
-            <tr id="cartRowTemplate">
-
-                <td class="px-5 py-4">
-
-                    <div>
-
-                        <div
-                            class="product-name font-semibold">
-
-                        </div>
-
-                        <div
-                            class="sku text-xs text-gray-500 mt-1">
-
-                        </div>
-
-                    </div>
-
-                </td>
-
-                <td
-                    class="barcode px-5 py-4">
-
-                </td>
-
-                <td class="px-5 py-4">
-
-                    <div class="flex justify-center items-center gap-2">
-
-                        <button
-                            class="decreaseQty w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300">
-
-                            −
-
-                        </button>
-
-                        <input
-                            type="number"
-                            min="1"
-                            class="cartQty input w-20 text-center">
-
-                        <button
-                            class="increaseQty w-8 h-8 rounded-lg bg-gray-200 hover:bg-gray-300">
-
-                            +
-
-                        </button>
-
-                    </div>
-
-                </td>
-
-                <td
-                    class="product-price px-5 py-4 text-right">
-
-                    ₦0.00
-
-                </td>
-
-                <td
-                    class="product-total px-5 py-4 text-right font-semibold">
-
-                    ₦0.00
-
-                </td>
-
-                <td
-                    class="px-5 py-4 text-center">
-
-                    <button
-                        class="removeCartItem px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white">
-
-                        Remove
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
-
-
-    <!-- ===================================== -->
-    <!-- CHECKOUT -->
-    <!-- ===================================== -->
-
-    <div
-        class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden mt-8 mb-10">
-
-        <div
-            class="px-6 py-5 border-b">
-
-            <h2 class="text-xl font-semibold">
-
-                Checkout
-
-            </h2>
-
-            <p class="text-sm text-gray-500 mt-1">
-
-                Review the order before completing checkout.
-
-            </p>
-
-        </div>
-
-        <div class="p-6">
-
-            <div class="grid lg:grid-cols-2 gap-8">
-
-                <!-- ======================== -->
-                <!-- PAYMENT INFORMATION -->
-                <!-- ======================== -->
+            <div class="flex items-center justify-between">
 
                 <div>
 
-                    <h3
-                        class="font-semibold text-lg mb-5">
+                    <h2 class="font-semibold text-lg">
 
-                        Payment Information
+                        Available Products
 
-                    </h3>
+                    </h2>
 
-                    <div class="space-y-5">
+                    <p class="text-sm text-gray-500 mt-1">
 
-                        <!-- Discount -->
+                        Select products to add into cart.
 
-                        <div>
-
-                            <label class="label">
-
-                                Discount (₦)
-
-                            </label>
-
-                            <input
-                                type="number"
-                                id="discount"
-                                class="input"
-                                min="0"
-                                value="0"
-                                step="0.01">
-
-                        </div>
-
-                        <!-- Tax -->
-
-                        <div>
-
-                            <label class="label">
-
-                                Tax (₦)
-
-                            </label>
-
-                            <input
-                                type="number"
-                                id="tax"
-                                class="input"
-                                min="0"
-                                value="0"
-                                step="0.01">
-
-                        </div>
-
-                        <!-- Shipping -->
-
-                        <div>
-
-                            <label class="label">
-
-                                Shipping (₦)
-
-                            </label>
-
-                            <input
-                                type="number"
-                                id="shipping"
-                                class="input"
-                                min="0"
-                                value="0"
-                                step="0.01">
-
-                        </div>
-
-                        <!-- Amount Paid -->
-
-                        <div>
-
-                            <label class="label">
-
-                                Amount Paid
-
-                            </label>
-
-                            <input
-                                type="number"
-                                id="amount_paid"
-                                class="input"
-                                min="0"
-                                value="0"
-                                step="0.01">
-
-                        </div>
-
-                        <!-- Balance -->
-
-                        <div>
-
-                            <label class="label">
-
-                                Balance
-
-                            </label>
-
-                            <input
-                                type="text"
-                                id="balance"
-                                class="input bg-gray-100"
-                                readonly
-                                value="₦0.00">
-
-                        </div>
-
-                        <!-- Notes -->
-
-                        <div>
-
-                            <label class="label">
-
-                                Order Notes
-
-                            </label>
-
-                            <textarea
-                                id="order_notes"
-                                rows="4"
-                                class="input resize-none"
-                                placeholder="Optional notes..."></textarea>
-
-                        </div>
-
-                    </div>
+                    </p>
 
                 </div>
-
-                <!-- ======================== -->
-                <!-- ORDER SUMMARY -->
-                <!-- ======================== -->
 
                 <div>
 
-                    <div
-                        class="rounded-2xl border bg-gray-50 p-6">
+                    <span
+                        id="availableCount"
+                        class="px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold">
 
-                        <h3
-                            class="text-lg font-semibold mb-6">
+                        0 Available
 
-                            Order Summary
-
-                        </h3>
-
-                        <div class="space-y-4">
-
-                            <div class="flex justify-between">
-
-                                <span>
-
-                                    Total Items
-
-                                </span>
-
-                                <strong id="summaryItems">
-
-                                    0
-
-                                </strong>
-
-                            </div>
-
-                            <div class="flex justify-between">
-
-                                <span>
-
-                                    Total Quantity
-
-                                </span>
-
-                                <strong id="summaryQty">
-
-                                    0
-
-                                </strong>
-
-                            </div>
-
-                            <div class="flex justify-between">
-
-                                <span>
-
-                                    Subtotal
-
-                                </span>
-
-                                <strong id="subtotalAmount">
-
-                                    ₦0.00
-
-                                </strong>
-
-                            </div>
-
-                            <div class="flex justify-between">
-
-                                <span>
-
-                                    Grand Total
-
-                                </span>
-
-                                <strong
-                                    id="grandTotal"
-                                    class="text-green-600">
-
-                                    ₦0.00
-
-                                </strong>
-
-                            </div>
-
-                            <div class="flex justify-between">
-
-                                <span>
-
-                                    Amount Paid
-
-                                </span>
-
-                                <strong id="summaryPaid">
-
-                                    ₦0.00
-
-                                </strong>
-
-                            </div>
-
-                            <div
-                                class="flex justify-between border-t pt-4">
-
-                                <span class="font-bold">
-
-                                    Balance
-
-                                </span>
-
-                                <strong
-                                    id="summaryBalance"
-                                    class="text-red-600">
-
-                                    ₦0.00
-
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    </span>
 
                 </div>
-
-            </div>
-
-            <!-- ======================== -->
-            <!-- ACTION BUTTONS -->
-            <!-- ======================== -->
-
-            <div
-                class="flex flex-wrap justify-end gap-4 mt-10">
-
-                <button
-                    type="button"
-                    id="cancelOrderBtn"
-                    class="px-6 py-3 rounded-xl border border-gray-300 hover:bg-gray-100">
-
-                    Cancel
-
-                </button>
-
-                <button
-                    type="button"
-                    id="saveDraftBtn"
-                    class="px-6 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white">
-
-                    Save Draft
-
-                </button>
-
-                <button
-                    type="button"
-                    id="checkoutBtn"
-                    class="px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">
-
-                    Complete Order
-
-                </button>
 
             </div>
 
         </div>
 
-    </div>
 
-
-
-    <!-- ===================================== -->
-    <!-- PROCESSING MODAL -->
-    <!-- ===================================== -->
-
-    <div
-        id="checkoutLoader"
-        class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+        <!-- Loader -->
 
         <div
-            class="bg-white rounded-2xl shadow-xl p-8 w-96 text-center">
+            id="productLoader"
+            class="hidden py-16 text-center">
 
             <svg
                 class="animate-spin h-10 w-10 mx-auto text-indigo-600"
@@ -1335,23 +487,625 @@ require_once __DIR__ . "/../includes/header.php";
 
             </svg>
 
-            <h3
-                class="font-semibold text-lg mt-5">
+            <p class="mt-4 text-gray-500">
 
-                Processing Order...
-
-            </h3>
-
-            <p
-                class="text-gray-500 text-sm mt-2">
-
-                Please wait while your order is being created.
+                Loading Products...
 
             </p>
 
         </div>
 
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead class="bg-gray-100">
+
+                    <tr>
+
+                        <th class="px-5 py-4 text-left">
+
+                            Product
+
+                        </th>
+
+                        <th class="px-5 py-4 text-left">
+
+                            Barcode
+
+                        </th>
+
+                        <th class="px-5 py-4 text-left">
+
+                            Category
+
+                        </th>
+
+                        <th class="px-5 py-4 text-left">
+
+                            Store
+
+                        </th>
+
+                        <th class="px-5 py-4 text-center">
+
+                            Qty
+
+                        </th>
+
+                        <th class="px-5 py-4 text-right">
+
+                            Price
+
+                        </th>
+
+                        <th class="px-5 py-4 text-center">
+
+                            Status
+
+                        </th>
+
+                        <th class="px-5 py-4 text-center">
+
+                            Action
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody
+                    id="productsTable">
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="py-16 text-center text-gray-500">
+
+                            No products available.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- PAGINATION -->
+    <!-- ===================================================== -->
+
+    <section
+        class="bg-white rounded-2xl shadow border border-gray-200 mt-6 p-5">
+
+        <div class="flex justify-between items-center">
+
+            <div>
+
+                Showing
+
+                <span id="pageStart">0</span>
+
+                -
+
+                <span id="pageEnd">0</span>
+
+                of
+
+                <span id="totalProducts">0</span>
+
+            </div>
+
+            <div class="flex gap-2">
+
+                <button
+                    id="firstPage"
+                    class="px-4 py-2 border rounded-lg">
+
+                    First
+
+                </button>
+
+                <button
+                    id="previousPage"
+                    class="px-4 py-2 border rounded-lg">
+
+                    Previous
+
+                </button>
+
+                <span
+                    id="pageIndicator"
+                    class="px-4 py-2 bg-indigo-600 rounded-lg text-white">
+
+                    Page 1
+
+                </span>
+
+                <button
+                    id="nextPage"
+                    class="px-4 py-2 border rounded-lg">
+
+                    Next
+
+                </button>
+
+                <button
+                    id="lastPage"
+                    class="px-4 py-2 border rounded-lg">
+
+                    Last
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- PRODUCT DETAILS MODAL -->
+    <!-- ===================================================== -->
+
+    <div
+        id="productModal"
+        class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+
+        <div
+            class="bg-white rounded-2xl w-full max-w-5xl shadow-xl">
+
+            <div
+                class="flex items-center justify-between border-b px-6 py-4">
+
+                <h3 class="text-xl font-semibold">
+
+                    Product Details
+
+                </h3>
+
+                <button
+                    id="closeProductModal"
+                    class="text-3xl">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+            <div
+                id="productModalBody"
+                class="p-6">
+
+                Loading...
+
+            </div>
+
+        </div>
+
     </div>
+
+    <!-- ===================================== -->
+    <!-- SHOPPING CART -->
+    <!-- ===================================== -->
+
+    <section class="grid lg:grid-cols-3 gap-6 mt-8">
+
+        <!-- ============================== -->
+        <!-- CART ITEMS -->
+        <!-- ============================== -->
+
+        <article class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+
+            <div class="border-b border-gray-200 px-6 py-5 flex items-center justify-between">
+
+                <div>
+
+                    <h2 class="text-lg font-semibold">
+
+                        Shopping Cart
+
+                    </h2>
+
+                    <p class="text-sm text-gray-500 mt-1">
+
+                        Products added to this order.
+
+                    </p>
+
+                </div>
+
+                <span
+                    id="cartCount"
+                    class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold">
+
+                    0 Items
+
+                </span>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full">
+
+                    <thead class="bg-gray-100">
+
+                        <tr>
+
+                            <th class="px-5 py-4 text-left">
+
+                                Product
+
+                            </th>
+
+                            <th class="px-5 py-4 text-center">
+
+                                Qty
+
+                            </th>
+
+                            <th class="px-5 py-4 text-right">
+
+                                Price
+
+                            </th>
+
+                            <th class="px-5 py-4 text-right">
+
+                                Total
+
+                            </th>
+
+                            <th class="px-5 py-4 text-center">
+
+                                Action
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                        id="cartTable">
+
+                        <tr id="emptyCart">
+
+                            <td
+                                colspan="5"
+                                class="text-center py-16 text-gray-500">
+
+                                No products added.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </article>
+
+        <!-- ============================== -->
+        <!-- ORDER SUMMARY -->
+        <!-- ============================== -->
+
+        <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+
+            <h2 class="text-lg font-semibold mb-6">
+
+                Order Summary
+
+            </h2>
+
+            <div class="space-y-4">
+
+                <div class="flex justify-between">
+
+                    <span>
+
+                        Subtotal
+
+                    </span>
+
+                    <strong id="subtotal">
+
+                        ₦0.00
+
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-2">
+
+                        Discount
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="discount"
+                        value="0"
+                        min="0"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-2">
+
+                        Tax
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tax"
+                        value="0"
+                        min="0"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium mb-2">
+
+                        Shipping
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="shipping"
+                        value="0"
+                        min="0"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+                </div>
+
+                <hr>
+
+                <div class="flex justify-between text-lg font-bold">
+
+                    <span>
+
+                        Grand Total
+
+                    </span>
+
+                    <span
+                        id="grandTotal"
+                        class="text-indigo-700">
+
+                        ₦0.00
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+    <!-- ===================================== -->
+    <!-- PAYMENT -->
+    <!-- ===================================== -->
+
+    <section class="grid lg:grid-cols-2 gap-6 mt-8">
+
+        <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+
+            <h2 class="text-lg font-semibold mb-6">
+
+                Payment Information
+
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-5">
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+
+                        Payment Method
+
+                    </label>
+
+                    <select
+                        id="paymentMethod"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                        <option value="Cash">
+
+                            Cash
+
+                        </option>
+
+                        <option value="Transfer">
+
+                            Transfer
+
+                        </option>
+
+                        <option value="POS">
+
+                            POS
+
+                        </option>
+
+                        <option value="Card">
+
+                            Card
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+
+                        Amount Paid
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amountPaid"
+                        value="0"
+                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                </div>
+
+            </div>
+
+            <div class="mt-5">
+
+                <label class="block mb-2 text-sm font-medium">
+
+                    Notes
+
+                </label>
+
+                <textarea
+                    id="notes"
+                    rows="4"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3"
+                    placeholder="Order notes..."></textarea>
+
+            </div>
+
+        </article>
+
+        <!-- ============================== -->
+        <!-- BALANCE -->
+        <!-- ============================== -->
+
+        <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+
+            <h2 class="text-lg font-semibold mb-6">
+
+                Payment Summary
+
+            </h2>
+
+            <div class="space-y-5">
+
+                <div class="flex justify-between">
+
+                    <span>
+
+                        Total Amount
+
+                    </span>
+
+                    <strong
+                        id="summaryTotal">
+
+                        ₦0.00
+
+                    </strong>
+
+                </div>
+
+                <div class="flex justify-between">
+
+                    <span>
+
+                        Amount Paid
+
+                    </span>
+
+                    <strong
+                        id="summaryPaid">
+
+                        ₦0.00
+
+                    </strong>
+
+                </div>
+
+                <hr>
+
+                <div class="flex justify-between text-xl font-bold">
+
+                    <span>
+
+                        Balance
+
+                    </span>
+
+                    <span
+                        id="balanceAmount"
+                        class="text-red-600">
+
+                        ₦0.00
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+    <!-- ===================================== -->
+    <!-- ACTION BUTTONS -->
+    <!-- ===================================== -->
+
+    <section class="mt-8 flex justify-end gap-4">
+
+        <button
+            id="clearOrder"
+            class="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300">
+
+            Clear Order
+
+        </button>
+
+        <button
+            id="saveDraft"
+            class="px-6 py-3 rounded-xl bg-yellow-500 text-white hover:bg-yellow-600">
+
+            Save Draft
+
+        </button>
+
+        <button
+            id="createOrder"
+            class="px-8 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">
+
+            Create Order
+
+        </button>
+
+    </section>
+
+
 
 </section>
 
@@ -1360,130 +1114,67 @@ require_once __DIR__ . "/../includes/footer.php";
 ?>
 
 
+
 <script>
 
-/*====================================================
-=            PART 1 - CONFIGURATION                  =
-====================================================*/
+/*
+|--------------------------------------------------------------------------
+| PART 3A
+| API CONFIGURATION
+|--------------------------------------------------------------------------
+*/
 
-const API_BASE_URL = "<?php echo API_BASE_URL; ?>";
-
-const API_BASE = API_BASE_URL;
+const API_BASE = window.API_BASE || "/increasestore/e-api";
 
 const PRODUCTS_API =
     API_BASE + "/dashboard/accepted-products/list.php";
 
-const PRODUCT_VIEW_API =
+const PRODUCT_DETAILS_API =
     API_BASE + "/dashboard/accepted-products/view.php";
-
-const CREATE_ORDER_API =
-    API_BASE + "/dashboard/orders/create.php";
-
-/*====================================================
-=            JWT AUTHENTICATION                      =
-====================================================*/
-
-const token = localStorage.getItem("token");
 
 /*
 |--------------------------------------------------------------------------
-| Check Login
+| AUTHENTICATION
 |--------------------------------------------------------------------------
 */
 
-if (!token) {
+const token = localStorage.getItem("auth_token");
 
-    alert("Your session has expired.");
+if (!token) {
 
     window.location.href = "../login.php";
 
 }
 
-/*====================================================
-=            GLOBAL AJAX SETUP                       =
-====================================================*/
-
-$.ajaxSetup({
-
-    cache: false,
-
-    dataType: "json",
-
-    headers: {
-
-        Authorization: "Bearer " + token
-
-    },
-
-    beforeSend: function (xhr) {
-
-        xhr.setRequestHeader(
-            "Authorization",
-            "Bearer " + token
-        );
-
-    },
-
-    complete: function (xhr) {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Session Expired
-        |--------------------------------------------------------------------------
-        */
-
-        if (xhr.status === 401) {
-
-            localStorage.removeItem("token");
-
-            showMessage(
-                "error",
-                "Your session has expired. Please login again."
-            );
-
-            setTimeout(function () {
-
-                window.location.href = "../login.php";
-
-            }, 1200);
-
-        }
-
-    }
-
-});
-
-/*====================================================
-=            GLOBAL VARIABLES                        =
-====================================================*/
-
-let allProducts = [];
-
-let filteredProducts = [];
-
-let cart = [];
-
-let currentPage = 1;
-
-const rowsPerPage = 10;
-
-let totalPages = 1;
-
-let lastOrderId = null;
-
-let selectedProduct = null;
-
-/*====================================================
-=            DOM REFERENCES                          =
-====================================================*/
-
 /*
 |--------------------------------------------------------------------------
-| Product Elements
+| GLOBAL VARIABLES
 |--------------------------------------------------------------------------
 */
 
-const productsTable = $("#productsTable");
+let products = [];
+
+let filteredProducts = [];
+
+let cart = JSON.parse(
+    localStorage.getItem("order_cart") || "[]"
+);
+
+let currentPage = 1;
+
+let rowsPerPage = 10;
+
+let totalPages = 1;
+
+let totalProducts = 0;
+
+let selectedProduct = null;
+
+/*
+|--------------------------------------------------------------------------
+| DOM ELEMENTS
+|--------------------------------------------------------------------------
+*/
 
 const productSearch = $("#productSearch");
 
@@ -1491,101 +1182,1088 @@ const barcodeSearch = $("#barcodeSearch");
 
 const categoryFilter = $("#categoryFilter");
 
-const stockFilter = $("#stockFilter");
+const productsTable = $("#productsTable");
 
-const sortProducts = $("#sortProducts");
+const productLoader = $("#productLoader");
 
-const availableCount = $("#availableCount");
+const productModal = $("#productModal");
+
+const productModalBody = $("#productModalBody");
 
 const productCount = $("#productCount");
 
-const loader = $("#productLoader");
+const availableCount = $("#availableCount");
 
-const selectedProductCard = $("#selectedProductCard");
+const pageIndicator = $("#pageIndicator");
 
-const selectedProductName = $("#selectedProductName");
+const pageStart = $("#pageStart");
 
-const selectedProductBarcode = $("#selectedProductBarcode");
+const pageEnd = $("#pageEnd");
 
-const selectedProductPrice = $("#selectedProductPrice");
-
-const selectedProductQty = $("#selectedProductQty");
-
-/*
-|--------------------------------------------------------------------------
-| Cart Elements
-|--------------------------------------------------------------------------
-*/
-
-const cartTable = $("#cartTable");
-
-const cartCount = $("#cartCount");
-
-const totalItems = $("#totalItems");
-
-const totalQuantity = $("#totalQuantity");
-
-const cartTotal = $("#cartTotal");
-
-/*
-|--------------------------------------------------------------------------
-| Summary
-|--------------------------------------------------------------------------
-*/
-
-const summaryItems = $("#summaryItems");
-
-const summaryQty = $("#summaryQty");
-
-const summaryTotal = $("#summaryTotal");
-
-const summaryPaid = $("#summaryPaid");
-
-const summaryBalance = $("#summaryBalance");
-
-/*
-|--------------------------------------------------------------------------
-| Payment Fields
-|--------------------------------------------------------------------------
-*/
-
-const amountPaid = $("#amount_paid");
-
-const balance = $("#balance");
-
-/*
-|--------------------------------------------------------------------------
-| Customer Fields
-|--------------------------------------------------------------------------
-*/
-
-const customerName = $("#customer_name");
-
-const customerPhone = $("#customer_phone");
-
-const customerEmail = $("#customer_email");
-
-const paymentMethod = $("#payment_method");
-
-const paymentStatus = $("#payment_status");
-
-const orderNotes = $("#order_notes");
-
-/*
-|--------------------------------------------------------------------------
-| Checkout
-|--------------------------------------------------------------------------
-*/
-
-const checkoutBtn = $("#checkoutBtn");
-
-const checkoutLoader = $("#checkoutLoader");
+const totalProductsText = $("#totalProducts");
 
 const responseBox = $("#responseBox");
 
-/*====================================================
-=            HELPER FUNCTIONS                        =
-====================================================*/
+/*
+|--------------------------------------------------------------------------
+| LOADER
+|--------------------------------------------------------------------------
+*/
+
+function showLoader() {
+
+    productLoader.removeClass("hidden");
+
+}
+
+function hideLoader() {
+
+    productLoader.addClass("hidden");
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| RESPONSE MESSAGE
+|--------------------------------------------------------------------------
+*/
+
+function showMessage(type, message) {
+
+    responseBox
+        .removeClass(
+            "hidden bg-green-100 bg-red-100 text-green-700 text-red-700"
+        );
+
+    if (type === "success") {
+
+        responseBox.addClass(
+            "bg-green-100 text-green-700"
+        );
+
+    } else {
+
+        responseBox.addClass(
+            "bg-red-100 text-red-700"
+        );
+
+    }
+
+    responseBox.text(message);
+
+    setTimeout(function () {
+
+        responseBox.addClass("hidden");
+
+    }, 4000);
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| FORMAT MONEY
+|--------------------------------------------------------------------------
+*/
+
+function formatMoney(amount) {
+
+    return Number(amount).toLocaleString(
+        "en-NG",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| ESCAPE HTML
+|--------------------------------------------------------------------------
+*/
+
+function escapeHtml(text) {
+
+    if (text === null || text === undefined) {
+
+        return "";
+
+    }
+
+    return $("<div>")
+        .text(text)
+        .html();
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PART 3B
+| LOAD PRODUCTS
+|--------------------------------------------------------------------------
+*/
+
+function loadProducts(page = 1) {
+
+    currentPage = page;
+
+    showLoader();
+
+    $.ajax({
+
+        url: PRODUCTS_API,
+
+        type: "GET",
+
+        dataType: "json",
+
+        headers: {
+
+            Authorization: "Bearer " + token
+
+        },
+
+        data: {
+
+            page: currentPage,
+
+            limit: rowsPerPage,
+
+            search: productSearch.val().trim(),
+
+            barcode: barcodeSearch.val().trim(),
+
+            category: categoryFilter.val(),
+
+            sort_by: "name",
+
+            sort_order: "ASC"
+
+        },
+
+        success: function(response) {
+
+            hideLoader();
+
+            if (!response.status) {
+
+                showMessage(
+                    "error",
+                    response.message
+                );
+
+                productsTable.html(`
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center py-16 text-red-500">
+
+                            ${response.message}
+
+                        </td>
+
+                    </tr>
+
+                `);
+
+                return;
+
+            }
+
+            products = response.data || [];
+
+            filteredProducts = products;
+
+            totalProducts =
+                response.pagination.total;
+
+            totalPages =
+                response.pagination.total_pages;
+
+            renderProducts();
+
+            updatePagination();
+
+        },
+
+        error: function(xhr) {
+
+            hideLoader();
+
+            console.error(xhr);
+
+            if (xhr.status === 401) {
+
+                localStorage.removeItem("auth_token");
+
+                window.location.href = "../login.php";
+
+                return;
+
+            }
+
+            showMessage(
+                "error",
+                "Unable to load products."
+            );
+
+        }
+
+    });
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| SEARCH
+|--------------------------------------------------------------------------
+*/
+
+$("#searchBtn").on("click", function () {
+
+    loadProducts(1);
+
+});
+
+productSearch.on("keypress", function (e) {
+
+    if (e.which === 13) {
+
+        loadProducts(1);
+
+    }
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| AUTO SEARCH
+|--------------------------------------------------------------------------
+*/
+
+let searchTimeout = null;
+
+productSearch.on("keyup", function () {
+
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(function () {
+
+        loadProducts(1);
+
+    }, 400);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| BARCODE SEARCH
+|--------------------------------------------------------------------------
+*/
+
+barcodeSearch.on("keypress", function (e) {
+
+    if (e.which !== 13) {
+
+        return;
+
+    }
+
+    loadProducts(1);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| CATEGORY FILTER
+|--------------------------------------------------------------------------
+*/
+
+categoryFilter.on("change", function () {
+
+    loadProducts(1);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| REFRESH
+|--------------------------------------------------------------------------
+*/
+
+$("#refreshProducts").on("click", function () {
+
+    loadProducts(currentPage);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| CLEAR SEARCH
+|--------------------------------------------------------------------------
+*/
+
+$("#clearSearch").on("click", function () {
+
+    productSearch.val("");
+
+    barcodeSearch.val("");
+
+    categoryFilter.val("");
+
+    loadProducts(1);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| INITIAL PAGE LOAD
+|--------------------------------------------------------------------------
+*/
+
+$(function () {
+
+    loadProducts();
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| PART 3C
+| RENDER PRODUCTS
+|--------------------------------------------------------------------------
+*/
+
+function renderProducts() {
+
+    if (!products.length) {
+
+        productsTable.html(`
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="py-16 text-center text-gray-500">
+
+                    No products available.
+
+                </td>
+
+            </tr>
+
+        `);
+
+        productCount.text("0 Products");
+
+        availableCount.text("0 Available");
+
+        return;
+
+    }
+
+    let html = "";
+
+    products.forEach(function(item) {
+
+        let badge = `
+            <span
+                class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+
+                Available
+
+            </span>
+        `;
+
+        if (Number(item.quantity) <= 0) {
+
+            badge = `
+                <span
+                    class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs">
+
+                    Out of Stock
+
+                </span>
+            `;
+
+        } else if (
+
+            item.product.minimum_stock &&
+            Number(item.quantity) <= Number(item.product.minimum_stock)
+
+        ) {
+
+            badge = `
+                <span
+                    class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
+
+                    Low Stock
+
+                </span>
+            `;
+
+        }
+
+        html += `
+
+        <tr class="border-b hover:bg-gray-50 transition">
+
+            <td class="px-5 py-4">
+
+                <div>
+
+                    <div class="font-semibold">
+
+                        ${escapeHtml(item.product.name)}
+
+                    </div>
+
+                    <div class="text-xs text-gray-500">
+
+                        ${escapeHtml(item.product.unit)}
+
+                    </div>
+
+                </div>
+
+            </td>
+
+            <td class="px-5 py-4">
+
+                ${escapeHtml(item.product.barcode)}
+
+            </td>
+
+            <td class="px-5 py-4">
+
+                ${escapeHtml(item.product.category)}
+
+            </td>
+
+            <td class="px-5 py-4">
+
+                ${escapeHtml(item.store.name)}
+
+            </td>
+
+            <td class="px-5 py-4 text-center font-semibold">
+
+                ${item.quantity}
+
+            </td>
+
+            <td class="px-5 py-4 text-right font-semibold text-green-700">
+
+                ₦${formatMoney(item.product.selling_price)}
+
+            </td>
+
+            <td class="px-5 py-4 text-center">
+
+                ${badge}
+
+            </td>
+
+            <td class="px-5 py-4">
+
+                <div class="flex justify-center gap-2">
+
+                    <button
+
+                        class="viewProduct
+                               px-3
+                               py-2
+                               rounded-lg
+                               bg-slate-100
+                               hover:bg-slate-200"
+
+                        data-id="${item.inventory_id}">
+
+                        View
+
+                    </button>
+
+                    <button
+
+                        class="addToCart
+                               px-3
+                               py-2
+                               rounded-lg
+                               bg-indigo-600
+                               text-white
+                               hover:bg-indigo-700"
+
+                        data-id="${item.inventory_id}">
+
+                        Add
+
+                    </button>
+
+                </div>
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+
+    productsTable.html(html);
+
+    productCount.text(totalProducts + " Products");
+
+    availableCount.text(products.length + " Available");
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| UPDATE PAGINATION
+|--------------------------------------------------------------------------
+*/
+
+function updatePagination() {
+
+    pageIndicator.text(
+
+        "Page " +
+        currentPage +
+        " of " +
+        totalPages
+
+    );
+
+    pageStart.text(
+
+        totalProducts === 0
+            ? 0
+            : ((currentPage - 1) * rowsPerPage) + 1
+
+    );
+
+    pageEnd.text(
+
+        Math.min(
+
+            currentPage * rowsPerPage,
+
+            totalProducts
+
+        )
+
+    );
+
+    totalProductsText.text(totalProducts);
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PART 3D
+| PRODUCT DETAILS MODAL
+|--------------------------------------------------------------------------
+*/
+
+$(document).on("click", ".viewProduct", function () {
+
+    const inventoryId = $(this).data("id");
+
+    loadProductDetails(inventoryId);
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| LOAD PRODUCT DETAILS
+|--------------------------------------------------------------------------
+*/
+
+function loadProductDetails(inventoryId) {
+
+    productModal
+        .removeClass("hidden")
+        .addClass("flex");
+
+    productModalBody.html(`
+
+        <div class="py-16 text-center">
+
+            <svg
+                class="animate-spin h-10 w-10 mx-auto text-indigo-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24">
+
+                <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4">
+                </circle>
+
+                <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4A10 10 0 002 12h2z">
+                </path>
+
+            </svg>
+
+            <p class="mt-4 text-gray-500">
+
+                Loading Product...
+
+            </p>
+
+        </div>
+
+    `);
+
+    $.ajax({
+
+        url: PRODUCT_DETAILS_API,
+
+        type: "GET",
+
+        dataType: "json",
+
+        headers: {
+
+            Authorization: "Bearer " + token
+
+        },
+
+        data: {
+
+            id: inventoryId
+
+        },
+
+        success: function(response) {
+
+            if (!response.status) {
+
+                productModalBody.html(`
+
+                    <div class="text-center py-10 text-red-500">
+
+                        ${response.message}
+
+                    </div>
+
+                `);
+
+                return;
+
+            }
+
+            const product = response.data.product;
+
+            const store = response.data.store;
+
+            const quantity = response.data.quantity;
+
+            productModalBody.html(`
+
+<div class="grid lg:grid-cols-2 gap-8">
+
+    <div>
+
+        <h3 class="text-lg font-semibold mb-5">
+
+            Product Information
+
+        </h3>
+
+        <table class="w-full text-sm">
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Product
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(product.name)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Barcode
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(product.barcode)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    SKU
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(product.sku)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Category
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(product.category)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Unit
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(product.unit)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Cost Price
+
+                </td>
+
+                <td>
+
+                    ₦${formatMoney(product.cost_price)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Selling Price
+
+                </td>
+
+                <td>
+
+                    ₦${formatMoney(product.selling_price)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Available Qty
+
+                </td>
+
+                <td>
+
+                    ${quantity}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Description
+
+                </td>
+
+                <td>
+
+                    ${product.description || "-"}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div>
+
+        <h3 class="text-lg font-semibold mb-5">
+
+            Store Information
+
+        </h3>
+
+        <table class="w-full text-sm">
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Store
+
+                </td>
+
+                <td>
+
+                    ${escapeHtml(store.name)}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Address
+
+                </td>
+
+                <td>
+
+                    ${store.address || "-"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Phone
+
+                </td>
+
+                <td>
+
+                    ${store.phone || "-"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Email
+
+                </td>
+
+                <td>
+
+                    ${store.email || "-"}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Inventory ID
+
+                </td>
+
+                <td>
+
+                    ${response.data.inventory_id}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="py-2 font-medium">
+
+                    Last Updated
+
+                </td>
+
+                <td>
+
+                    ${response.data.updated_at}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+            `);
+
+        },
+
+        error: function(xhr) {
+
+            productModalBody.html(`
+
+                <div class="text-center py-10 text-red-500">
+
+                    ${xhr.responseJSON?.message || "Unable to load product details."}
+
+                </div>
+
+            `);
+
+        }
+
+    });
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| CLOSE PRODUCT MODAL
+|--------------------------------------------------------------------------
+*/
+
+$("#closeProductModal").on("click", function () {
+
+    productModal
+        .removeClass("flex")
+        .addClass("hidden");
+
+});
+
+productModal.on("click", function(e){
+
+    if(e.target === this){
+
+        productModal
+            .removeClass("flex")
+            .addClass("hidden");
+
+    }
+
+});
+
+
+
+////teste
+
+
+/*
+|--------------------------------------------------------------------------
+| HELPERS
+|--------------------------------------------------------------------------
+*/
+
+/*
+|--------------------------------------------------------------------------
+| Response Alert
+|--------------------------------------------------------------------------
+*/
+
+function showMessage(type, message) {
+
+    const box = $("#responseBox");
+
+    box.removeClass("hidden");
+
+    box.removeClass(
+        "bg-green-100 text-green-700",
+        "bg-red-100 text-red-700",
+        "bg-yellow-100 text-yellow-700"
+    );
+
+    if (type === "success") {
+
+        box.addClass("bg-green-100 text-green-700");
+
+    } else if (type === "warning") {
+
+        box.addClass("bg-yellow-100 text-yellow-700");
+
+    } else {
+
+        box.addClass("bg-red-100 text-red-700");
+
+    }
+
+    box.html(message);
+
+    setTimeout(function () {
+
+        box.addClass("hidden");
+
+    }, 4000);
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Loader
+|--------------------------------------------------------------------------
+*/
+
+function showLoader() {
+
+    $("#productLoader").removeClass("hidden");
+
+}
+
+function hideLoader() {
+
+    $("#productLoader").addClass("hidden");
+
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -1593,23 +2271,27 @@ const responseBox = $("#responseBox");
 |--------------------------------------------------------------------------
 */
 
-function formatMoney(value) {
+function formatMoney(amount) {
 
-    value = Number(value);
-
-    if (isNaN(value)) {
-
-        value = 0;
-
-    }
-
-    return value.toLocaleString("en-NG", {
+    return Number(amount || 0).toLocaleString("en-NG", {
 
         minimumFractionDigits: 2,
 
         maximumFractionDigits: 2
 
     });
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Parse Number
+|--------------------------------------------------------------------------
+*/
+
+function number(value) {
+
+    return Number(value || 0);
 
 }
 
@@ -1633,1375 +2315,205 @@ function escapeHtml(text) {
 
 /*
 |--------------------------------------------------------------------------
-| Response Message
+| Empty Value
 |--------------------------------------------------------------------------
 */
 
-function showMessage(type, message) {
+function empty(value) {
 
-    responseBox
-        .removeClass(
-            "hidden bg-red-100 bg-green-100 text-red-700 text-green-700"
-        );
-
-    if (type === "success") {
-
-        responseBox.addClass(
-            "bg-green-100 text-green-700"
-        );
-
-    } else {
-
-        responseBox.addClass(
-            "bg-red-100 text-red-700"
-        );
-
-    }
-
-    responseBox.text(message);
-
-    $("html, body").animate({
-
-        scrollTop: 0
-
-    }, 250);
-
-    setTimeout(function () {
-
-        responseBox.addClass("hidden");
-
-    }, 4000);
+    return value === null ||
+        value === undefined ||
+        value === "";
 
 }
 
 /*
 |--------------------------------------------------------------------------
-| Product Loader
+| Generate Badge
 |--------------------------------------------------------------------------
 */
 
-function showProductLoader() {
+function stockBadge(quantity, minimumStock = 0) {
 
-    loader.removeClass("hidden");
+    quantity = Number(quantity);
 
-}
+    minimumStock = Number(minimumStock);
 
-function hideProductLoader() {
+    if (quantity <= 0) {
 
-    loader.addClass("hidden");
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Checkout Loader
-|--------------------------------------------------------------------------
-*/
-
-function showCheckoutLoader() {
-
-    checkoutLoader
-        .removeClass("hidden")
-        .addClass("flex");
-
-    checkoutBtn
-        .prop("disabled", true)
-        .text("Processing...");
-
-}
-
-function hideCheckoutLoader() {
-
-    checkoutLoader
-        .removeClass("flex")
-        .addClass("hidden");
-
-    checkoutBtn
-        .prop("disabled", false)
-        .text("Complete Order");
-
-}
-
-/*====================================================
-=            PAGE INITIALIZATION                     =
-====================================================*/
-
-$(document).ready(function () {
-
-    showProductLoader();
-
-    generateOrderNumber();
-
-    loadDraft();
-
-    loadProducts();
-
-    calculateTotals();
-
-});
-
-/*====================================================
-= PART 2A - LOAD PRODUCTS
-====================================================*/
-
-function loadProducts() {
-
-    showProductLoader();
-
-    $.ajax({
-
-        url: PRODUCTS_API,
-
-        type: "GET",
-
-        dataType: "json",
-
-        headers: {
-            Authorization: "Bearer " + token
-        },
-
-        data: {
-
-            page: currentPage,
-
-            limit: rowsPerPage,
-
-            search: productSearch.val().trim(),
-
-            category: categoryFilter.val(),
-
-            stock: stockFilter.val(),
-
-            sort: sortProducts.val()
-
-        },
-
-        success: function (response) {
-
-            hideProductLoader();
-
-            if (!response.status) {
-
-                productsTable.html(`
-                    <tr>
-                        <td colspan="8"
-                            class="text-center py-10 text-red-500">
-                            ${response.message || "No products found."}
-                        </td>
-                    </tr>
-                `);
-
-                availableCount.text("0 Available");
-                productCount.text("0 Products");
-
-                return;
-
-            }
-
-            processProducts(response);
-
-        },
-
-        error: function (xhr) {
-
-            hideProductLoader();
-
-            if (xhr.status === 401) {
-
-                showMessage(
-                    "error",
-                    "Your session has expired. Please login again."
-                );
-
-                localStorage.removeItem("token");
-
-                setTimeout(function () {
-
-                    window.location.href = "../login.php";
-
-                }, 1200);
-
-                return;
-
-            }
-
-            console.error(xhr.responseText);
-
-            showMessage(
-                "error",
-                "Unable to load products."
-            );
-
-        }
-
-    });
-
-}
-
-
-/*====================================================
-= PART 2B - SEARCH, FILTERS & SORTING
-====================================================*/
-
-/*
-|--------------------------------------------------------------------------
-| Product Search
-|--------------------------------------------------------------------------
-*/
-
-productSearch.on("keyup", function () {
-
-    currentPage = 1;
-
-    loadProducts();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Barcode Search
-|--------------------------------------------------------------------------
-*/
-
-barcodeSearch.on("keypress", function (e) {
-
-    if (e.which !== 13) return;
-
-    e.preventDefault();
-
-    const barcode = $(this).val().trim();
-
-    if (barcode === "") return;
-
-    const product = allProducts.find(function (item) {
-
-        return item.barcode === barcode;
-
-    });
-
-    if (!product) {
-
-        showMessage(
-            "error",
-            "Product not found."
-        );
-
-        return;
-
-    }
-
-    if (Number(product.quantity) <= 0) {
-
-        showMessage(
-            "error",
-            "Product is out of stock."
-        );
-
-        return;
-
-    }
-
-    addToCart(product.id);
-
-    $(this).val("");
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Category Filter
-|--------------------------------------------------------------------------
-*/
-
-categoryFilter.on("change", function () {
-
-    currentPage = 1;
-
-    loadProducts();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Stock Filter
-|--------------------------------------------------------------------------
-*/
-
-stockFilter.on("change", function () {
-
-    currentPage = 1;
-
-    loadProducts();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Sort Products
-|--------------------------------------------------------------------------
-*/
-
-sortProducts.on("change", function () {
-
-    currentPage = 1;
-
-    loadProducts();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Refresh Products
-|--------------------------------------------------------------------------
-*/
-
-$("#refreshProducts").on("click", function () {
-
-    loadProducts();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Clear Search
-|--------------------------------------------------------------------------
-*/
-
-$("#clearSearch").on("click", function () {
-
-    productSearch.val("");
-
-    barcodeSearch.val("");
-
-    categoryFilter.val("");
-
-    stockFilter.val("");
-
-    sortProducts.val("name");
-
-    currentPage = 1;
-
-    loadProducts();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Barcode Preview Card
-|--------------------------------------------------------------------------
-*/
-
-barcodeSearch.on("input", function () {
-
-    const code = $(this).val().trim();
-
-    if (code.length < 3) {
-
-        $("#selectedProductCard").addClass("hidden");
-
-        return;
-
-    }
-
-    const product = allProducts.find(function (item) {
-
-        return item.barcode === code;
-
-    });
-
-    if (!product) {
-
-        $("#selectedProductCard").addClass("hidden");
-
-        return;
-
-    }
-
-    $("#selectedProductCard").removeClass("hidden");
-
-    $("#selectedProductName").text(product.product_name);
-
-    $("#selectedProductBarcode").text(product.barcode);
-
-    $("#selectedProductPrice").text(
-        "₦" + formatMoney(product.selling_price)
-    );
-
-    $("#selectedProductQty").text(
-        "Qty : " + product.quantity
-    );
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Hide Product Card
-|--------------------------------------------------------------------------
-*/
-
-productSearch.on("keyup", function () {
-
-    if ($(this).val().trim() === "") {
-
-        $("#selectedProductCard").addClass("hidden");
-
-    }
-
-});
-
-barcodeSearch.on("keyup", function () {
-
-    if ($(this).val().trim() === "") {
-
-        $("#selectedProductCard").addClass("hidden");
-
-    }
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Populate Category Dropdown
-|--------------------------------------------------------------------------
-*/
-
-function populateCategories() {
-
-    const categories = [];
-
-    allProducts.forEach(function (product) {
-
-        if (
-            product.category &&
-            !categories.includes(product.category)
-        ) {
-
-            categories.push(product.category);
-
-        }
-
-    });
-
-    categories.sort();
-
-    categoryFilter.html(
-        `<option value="">All Categories</option>`
-    );
-
-    categories.forEach(function (category) {
-
-        categoryFilter.append(`
-            <option value="${category}">
-                ${category}
-            </option>
-        `);
-
-    });
-
-}
-
-/*====================================================
-= PART 2C - RENDER PRODUCTS TABLE & PAGINATION
-====================================================*/
-
-/*
-|--------------------------------------------------------------------------
-| Process API Response
-|--------------------------------------------------------------------------
-*/
-
-function processProducts(response) {
-
-    allProducts = response.data || [];
-
-    filteredProducts = [...allProducts];
-
-    totalPages = Number(response.pagination?.total_pages || 1);
-
-    currentPage = Number(response.pagination?.current_page || 1);
-
-    populateCategories();
-
-    renderProducts();
-
-    renderPagination();
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Render Products Table
-|--------------------------------------------------------------------------
-*/
-
-function renderProducts() {
-
-    productsTable.empty();
-
-    if (filteredProducts.length === 0) {
-
-        productsTable.html(`
-            <tr>
-                <td colspan="8"
-                    class="py-12 text-center text-gray-500">
-                    No available products found.
-                </td>
-            </tr>
-        `);
-
-        availableCount.text("0 Available");
-
-        productCount.text("0 Products");
-
-        return;
-
-    }
-
-    availableCount.text(filteredProducts.length + " Available");
-
-    productCount.text(filteredProducts.length + " Products");
-
-    filteredProducts.forEach(function (product) {
-
-        let badge = "";
-
-        if (Number(product.quantity) <= 0) {
-
-            badge = `
-                <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs">
-                    Out of Stock
-                </span>
-            `;
-
-        } else if (
-            Number(product.quantity) <= Number(product.minimum_stock)
-        ) {
-
-            badge = `
-                <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
-                    Low Stock
-                </span>
-            `;
-
-        } else {
-
-            badge = `
-                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
-                    Available
-                </span>
-            `;
-
-        }
-
-        productsTable.append(`
-
-            <tr class="hover:bg-gray-50">
-
-                <td class="px-6 py-4">
-
-                    <div>
-
-                        <div class="font-semibold">
-
-                            ${escapeHtml(product.product_name)}
-
-                        </div>
-
-                        <div class="text-xs text-gray-500">
-
-                            ${escapeHtml(product.description || "")}
-
-                        </div>
-
-                    </div>
-
-                </td>
-
-                <td class="px-6 py-4">
-
-                    ${escapeHtml(product.barcode)}
-
-                </td>
-
-                <td class="px-6 py-4">
-
-                    ${escapeHtml(product.sku || "-")}
-
-                </td>
-
-                <td class="px-6 py-4">
-
-                    ${escapeHtml(product.category || "-")}
-
-                </td>
-
-                <td class="px-6 py-4 text-center">
-
-                    ${product.quantity}
-
-                </td>
-
-                <td class="px-6 py-4 text-right">
-
-                    ₦${formatMoney(product.selling_price)}
-
-                </td>
-
-                <td class="px-6 py-4 text-center">
-
-                    ${badge}
-
-                </td>
-
-                <td class="px-6 py-4 text-center">
-
-                    <button
-                        class="bg-indigo-600
-                               hover:bg-indigo-700
-                               text-white
-                               px-4 py-2
-                               rounded-lg addToCartBtn"
-                        data-id="${product.id}">
-
-                        Add to Cart
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-        `);
-
-    });
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Add To Cart Click
-|--------------------------------------------------------------------------
-*/
-
-$(document).on("click", ".addToCartBtn", function () {
-
-    addToCart($(this).data("id"));
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Pagination
-|--------------------------------------------------------------------------
-*/
-
-function renderPagination() {
-
-    $("#pagination").remove();
-
-    if (totalPages <= 1) {
-
-        return;
-
-    }
-
-    let html = `
-
-        <div
-            id="pagination"
-            class="flex justify-center items-center gap-2 py-6">
-
-    `;
-
-    html += `
-
-        <button
-            class="pageBtn px-3 py-2 border rounded-lg"
-            data-page="${currentPage - 1}"
-            ${currentPage === 1 ? "disabled" : ""}>
-
-            Previous
-
-        </button>
-
-    `;
-
-    for (let i = 1; i <= totalPages; i++) {
-
-        html += `
-
-            <button
-                class="pageBtn
-                       px-3 py-2
-                       rounded-lg
-                       ${
-                           i === currentPage
-                               ? "bg-indigo-600 text-white"
-                               : "border"
-                       }"
-                data-page="${i}">
-
-                ${i}
-
-            </button>
-
+        return `
+            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs">
+                Out of Stock
+            </span>
         `;
 
     }
 
-    html += `
+    if (minimumStock > 0 && quantity <= minimumStock) {
 
-        <button
-            class="pageBtn px-3 py-2 border rounded-lg"
-            data-page="${currentPage + 1}"
-            ${currentPage === totalPages ? "disabled" : ""}>
+        return `
+            <span class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
+                Low Stock
+            </span>
+        `;
 
-            Next
+    }
 
-        </button>
-
+    return `
+        <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs">
+            Available
+        </span>
     `;
 
-    html += `</div>`;
+}
 
-    $(".overflow-x-auto:last").after(html);
+/*
+|--------------------------------------------------------------------------
+| Reset Customer Form
+|--------------------------------------------------------------------------
+*/
+
+function resetCustomerForm() {
+
+    $("#customerName").val("");
+
+    $("#customerPhone").val("");
+
+    $("#customerEmail").val("");
+
+    $("#paymentMethod").val("");
+
+    $("#discount").val(0);
+
+    $("#tax").val(0);
+
+    $("#shipping").val(0);
+
+    $("#amountPaid").val(0);
+
+    $("#notes").val("");
 
 }
 
 /*
 |--------------------------------------------------------------------------
-| Pagination Click
+| Clear Product Search
 |--------------------------------------------------------------------------
 */
 
-$(document).on("click", ".pageBtn", function () {
+function clearSearch() {
 
-    const page = Number($(this).data("page"));
+    $("#productSearch").val("");
 
-    if (
-        page < 1 ||
-        page > totalPages
-    ) {
-        return;
-    }
+    $("#barcodeSearch").val("");
 
-    currentPage = page;
+    $("#categoryFilter").val("");
 
-    loadProducts();
+    $("#storeFilter").val("");
 
-});
+    $("#stockFilter").val("");
 
-/*====================================================
-= PART 3A - SHOPPING CART LOGIC
-====================================================*/
-
-/*
-|--------------------------------------------------------------------------
-| Add Product To Cart
-|--------------------------------------------------------------------------
-*/
-
-function addToCart(productId) {
-
-    const product = allProducts.find(function (item) {
-
-        return Number(item.id) === Number(productId);
-
-    });
-
-    if (!product) {
-
-        showMessage(
-            "error",
-            "Product not found."
-        );
-
-        return;
-
-    }
-
-    if (Number(product.quantity) <= 0) {
-
-        showMessage(
-            "error",
-            "Product is out of stock."
-        );
-
-        return;
-
-    }
-
-    const existing = cart.find(function (item) {
-
-        return Number(item.id) === Number(productId);
-
-    });
-
-    if (existing) {
-
-        if (existing.quantity >= Number(product.quantity)) {
-
-            showMessage(
-                "error",
-                "Maximum available stock reached."
-            );
-
-            return;
-
-        }
-
-        existing.quantity++;
-
-        existing.total =
-            existing.quantity *
-            existing.selling_price;
-
-    } else {
-
-        cart.push({
-
-            id: Number(product.id),
-
-            product_name: product.product_name,
-
-            barcode: product.barcode,
-
-            sku: product.sku,
-
-            category: product.category,
-
-            selling_price: Number(product.selling_price),
-
-            available_quantity: Number(product.quantity),
-
-            quantity: 1,
-
-            total: Number(product.selling_price)
-
-        });
-
-    }
-
-    renderCart();
-
-    calculateTotals();
-
-    saveDraft();
-
-    showMessage(
-        "success",
-        product.product_name + " added to cart."
-    );
+    $("#sortProducts").val("name");
 
 }
 
 /*
 |--------------------------------------------------------------------------
-| Increase Quantity
+| Reset Entire Order
 |--------------------------------------------------------------------------
 */
 
-$(document).on("click", ".increaseQty", function () {
-
-    const id = Number($(this).data("id"));
-
-    const item = cart.find(function (cartItem) {
-
-        return cartItem.id === id;
-
-    });
-
-    if (!item) return;
-
-    if (item.quantity >= item.available_quantity) {
-
-        showMessage(
-            "error",
-            "Maximum stock reached."
-        );
-
-        return;
-
-    }
-
-    item.quantity++;
-
-    item.total =
-        item.quantity *
-        item.selling_price;
-
-    renderCart();
-
-    calculateTotals();
-
-    saveDraft();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Decrease Quantity
-|--------------------------------------------------------------------------
-*/
-
-$(document).on("click", ".decreaseQty", function () {
-
-    const id = Number($(this).data("id"));
-
-    const item = cart.find(function (cartItem) {
-
-        return cartItem.id === id;
-
-    });
-
-    if (!item) return;
-
-    item.quantity--;
-
-    if (item.quantity <= 0) {
-
-        cart = cart.filter(function (cartItem) {
-
-            return cartItem.id !== id;
-
-        });
-
-    } else {
-
-        item.total =
-            item.quantity *
-            item.selling_price;
-
-    }
-
-    renderCart();
-
-    calculateTotals();
-
-    saveDraft();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Quantity Changed Manually
-|--------------------------------------------------------------------------
-*/
-
-$(document).on("change", ".cartQty", function () {
-
-    const id = Number($(this).data("id"));
-
-    let qty = parseInt($(this).val());
-
-    const item = cart.find(function (cartItem) {
-
-        return cartItem.id === id;
-
-    });
-
-    if (!item) return;
-
-    if (isNaN(qty) || qty < 1) {
-
-        qty = 1;
-
-    }
-
-    if (qty > item.available_quantity) {
-
-        qty = item.available_quantity;
-
-        showMessage(
-            "error",
-            "Maximum stock reached."
-        );
-
-    }
-
-    item.quantity = qty;
-
-    item.total =
-        item.quantity *
-        item.selling_price;
-
-    renderCart();
-
-    calculateTotals();
-
-    saveDraft();
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Remove Cart Item
-|--------------------------------------------------------------------------
-*/
-
-$(document).on("click", ".removeCartItem", function () {
-
-    const id = Number($(this).data("id"));
-
-    cart = cart.filter(function (item) {
-
-        return item.id !== id;
-
-    });
-
-    renderCart();
-
-    calculateTotals();
-
-    saveDraft();
-
-    showMessage(
-        "success",
-        "Product removed from cart."
-    );
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Clear Cart
-|--------------------------------------------------------------------------
-*/
-
-$("#clearCartBtn").on("click", function () {
-
-    if (cart.length === 0) {
-
-        return;
-
-    }
-
-    if (!confirm("Clear all items from cart?")) {
-
-        return;
-
-    }
+function resetOrder() {
 
     cart = [];
 
+    saveCart();
+
     renderCart();
 
-    calculateTotals();
+    updateTotals();
 
-    saveDraft();
-
-    showMessage(
-        "success",
-        "Cart cleared successfully."
-    );
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Check Cart Empty
-|--------------------------------------------------------------------------
-*/
-
-function cartIsEmpty() {
-
-    return cart.length === 0;
+    resetCustomerForm();
 
 }
 
 /*
 |--------------------------------------------------------------------------
-| Get Cart JSON
+| Update Statistics Cards
 |--------------------------------------------------------------------------
 */
 
-function getCartData() {
+function updateStatistics() {
 
-    return cart.map(function (item) {
+    let totalItems = 0;
 
-        return {
+    let subtotal = 0;
 
-            product_id: item.id,
+    cart.forEach(function(item){
 
-            quantity: item.quantity,
+        totalItems += Number(item.quantity);
 
-            selling_price: item.selling_price,
+        subtotal += Number(item.quantity) *
+                    Number(item.selling_price);
 
-            total: item.total
+    });
 
-        };
+    $("#cartItems").text(totalItems);
+
+    $("#cartSubtotal").text("₦" + formatMoney(subtotal));
+
+    $("#availableProducts").text(products.length);
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Save Cart
+|--------------------------------------------------------------------------
+*/
+
+function saveCart() {
+
+    localStorage.setItem(
+        "order_cart",
+        JSON.stringify(cart)
+    );
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Load Cart
+|--------------------------------------------------------------------------
+*/
+
+function loadCart() {
+
+    cart = JSON.parse(
+        localStorage.getItem("order_cart") || "[]"
+    );
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Find Cart Item
+|--------------------------------------------------------------------------
+*/
+
+function getCartItem(inventoryId) {
+
+    return cart.find(function(item){
+
+        return Number(item.inventory_id) === Number(inventoryId);
 
     });
 
 }
 
-
-/*====================================================
-= PART 3B - RENDER SHOPPING CART
-====================================================*/
-
 /*
 |--------------------------------------------------------------------------
-| Render Cart
-|--------------------------------------------------------------------------
-*/
-
-function renderCart() {
-
-    cartTable.empty();
-
-    /*
-    |--------------------------------------------------------------------------
-    | Empty Cart
-    |--------------------------------------------------------------------------
-    */
-
-    if (cart.length === 0) {
-
-        cartTable.html(`
-
-            <tr id="emptyCartRow">
-
-                <td
-                    colspan="6"
-                    class="text-center py-12 text-gray-500">
-
-                    No product has been added to the cart.
-
-                </td>
-
-            </tr>
-
-        `);
-
-        cartCount.text("0 Items");
-
-        totalItems.text("0");
-
-        totalQuantity.text("0");
-
-        cartTotal.text("₦0.00");
-
-        summaryItems.text("0");
-
-        summaryQty.text("0");
-
-        summaryTotal.text("₦0.00");
-
-        summaryPaid.text(
-            "₦" +
-            formatMoney(amountPaid.val() || 0)
-        );
-
-        summaryBalance.text("₦0.00");
-
-        return;
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cart Totals
-    |--------------------------------------------------------------------------
-    */
-
-    let items = 0;
-
-    let qty = 0;
-
-    let total = 0;
-
-    /*
-    |--------------------------------------------------------------------------
-    | Build Cart Rows
-    |--------------------------------------------------------------------------
-    */
-
-    cart.forEach(function (item) {
-
-        items++;
-
-        qty += Number(item.quantity);
-
-        total += Number(item.total);
-
-        cartTable.append(`
-
-            <tr
-                class="border-b hover:bg-gray-50"
-                data-id="${item.id}">
-
-                <td class="px-6 py-4">
-
-                    <div>
-
-                        <div class="font-semibold">
-
-                            ${escapeHtml(item.product_name)}
-
-                        </div>
-
-                        <div
-                            class="text-xs text-gray-500">
-
-                            ${escapeHtml(item.sku || "-")}
-
-                        </div>
-
-                    </div>
-
-                </td>
-
-                <td class="px-6 py-4">
-
-                    ${escapeHtml(item.barcode)}
-
-                </td>
-
-                <td class="px-6 py-4">
-
-                    <div
-                        class="flex items-center justify-center gap-2">
-
-                        <button
-                            class="decreaseQty
-                                   w-8 h-8
-                                   rounded-lg
-                                   bg-gray-100
-                                   hover:bg-gray-200"
-                            data-id="${item.id}">
-
-                            -
-
-                        </button>
-
-                        <input
-                            type="number"
-                            class="cartQty input w-20 text-center"
-                            min="1"
-                            max="${item.available_quantity}"
-                            value="${item.quantity}"
-                            data-id="${item.id}">
-
-                        <button
-                            class="increaseQty
-                                   w-8 h-8
-                                   rounded-lg
-                                   bg-gray-100
-                                   hover:bg-gray-200"
-                            data-id="${item.id}">
-
-                            +
-
-                        </button>
-
-                    </div>
-
-                </td>
-
-                <td
-                    class="px-6 py-4 text-right">
-
-                    ₦${formatMoney(item.selling_price)}
-
-                </td>
-
-                <td
-                    class="px-6 py-4 text-right font-semibold">
-
-                    ₦${formatMoney(item.total)}
-
-                </td>
-
-                <td
-                    class="px-6 py-4 text-center">
-
-                    <button
-                        class="removeCartItem
-                               px-3 py-2
-                               rounded-lg
-                               bg-red-500
-                               hover:bg-red-600
-                               text-white"
-                        data-id="${item.id}">
-
-                        Remove
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-        `);
-
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Update Summary
-    |--------------------------------------------------------------------------
-    */
-
-    cartCount.text(items + " Item(s)");
-
-    totalItems.text(items);
-
-    totalQuantity.text(qty);
-
-    cartTotal.text(
-        "₦" + formatMoney(total)
-    );
-
-    summaryItems.text(items);
-
-    summaryQty.text(qty);
-
-    summaryTotal.text(
-        "₦" + formatMoney(total)
-    );
-
-    summaryPaid.text(
-        "₦" +
-        formatMoney(amountPaid.val() || 0)
-    );
-
-    const paid =
-        parseFloat(amountPaid.val()) || 0;
-
-    const balanceValue =
-        paid - total;
-
-    summaryBalance.text(
-        "₦" + formatMoney(balanceValue)
-    );
-
-    balance.val(
-        "₦" + formatMoney(balanceValue)
-    );
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Auto Re-render Paid Amount
-|--------------------------------------------------------------------------
-*/
-
-amountPaid.on("keyup change", function () {
-
-    renderCart();
-
-});
-
-
-/*====================================================
-= PART 4A - ORDER TOTALS ENGINE
-====================================================*/
-
-/*
-|--------------------------------------------------------------------------
-| Calculate Order Totals
+| Calculate Totals
 |--------------------------------------------------------------------------
 */
 
@@ -3009,1048 +2521,415 @@ function calculateTotals() {
 
     let subtotal = 0;
 
-    let totalItemsCount = 0;
+    cart.forEach(function(item){
 
-    let totalQuantityCount = 0;
-
-    /*
-    |--------------------------------------------------------------------------
-    | Calculate Cart Totals
-    |--------------------------------------------------------------------------
-    */
-
-    cart.forEach(function (item) {
-
-        subtotal += Number(item.total);
-
-        totalItemsCount++;
-
-        totalQuantityCount += Number(item.quantity);
+        subtotal += Number(item.quantity) *
+                    Number(item.selling_price);
 
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Additional Charges
-    |--------------------------------------------------------------------------
-    */
+    const discount = number($("#discount").val());
 
-    const discount =
-        parseFloat($("#discount").val()) || 0;
+    const tax = number($("#tax").val());
 
-    const tax =
-        parseFloat($("#tax").val()) || 0;
+    const shipping = number($("#shipping").val());
 
-    const shipping =
-        parseFloat($("#shipping").val()) || 0;
+    const total = subtotal - discount + tax + shipping;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Grand Total
-    |--------------------------------------------------------------------------
-    */
+    const paid = number($("#amountPaid").val());
 
-    let grandTotal =
-        subtotal -
-        discount +
-        tax +
-        shipping;
-
-    if (grandTotal < 0) {
-
-        grandTotal = 0;
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Payment
-    |--------------------------------------------------------------------------
-    */
-
-    const paid =
-        parseFloat($("#amount_paid").val()) || 0;
-
-    const balanceAmount =
-        paid - grandTotal;
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cart Summary
-    |--------------------------------------------------------------------------
-    */
-
-    cartCount.text(totalItemsCount + " Item(s)");
-
-    totalItems.text(totalItemsCount);
-
-    totalQuantity.text(totalQuantityCount);
-
-    cartTotal.text(
-        "₦" + formatMoney(subtotal)
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | Checkout Summary
-    |--------------------------------------------------------------------------
-    */
-
-    summaryItems.text(totalItemsCount);
-
-    summaryQty.text(totalQuantityCount);
-
-    summaryTotal.text(
-        "₦" + formatMoney(grandTotal)
-    );
-
-    summaryPaid.text(
-        "₦" + formatMoney(paid)
-    );
-
-    summaryBalance.text(
-        "₦" + formatMoney(balanceAmount)
-    );
-
-    /*
-    |--------------------------------------------------------------------------
-    | Hidden / Readonly Fields
-    |--------------------------------------------------------------------------
-    */
-
-    $("#subtotalAmount").text(
-        "₦" + formatMoney(subtotal)
-    );
-
-    $("#grandTotal").text(
-        "₦" + formatMoney(grandTotal)
-    );
-
-    balance.val(
-        "₦" + formatMoney(balanceAmount)
-    );
-
-}
-
-/*====================================================
-= PART 4B - CHECKOUT VALIDATION
-====================================================*/
-
-/*
-|--------------------------------------------------------------------------
-| Checkout Button
-|--------------------------------------------------------------------------
-*/
-
-checkoutBtn.on("click", function () {
-
-    if (!validateOrder()) {
-
-        return;
-
-    }
-
-    const orderData = collectOrderData();
-
-    submitOrder(orderData);
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Validate Order
-|--------------------------------------------------------------------------
-*/
-
-function validateOrder() {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Customer Information
-    |--------------------------------------------------------------------------
-    */
-
-    const customerName =
-        $("#customer_name").val().trim();
-
-    const customerPhone =
-        $("#customer_phone").val().trim();
-
-    const paymentMethod =
-        $("#payment_method").val();
-
-    if (customerName === "") {
-
-        showMessage(
-            "error",
-            "Customer name is required."
-        );
-
-        $("#customer_name").focus();
-
-        return false;
-
-    }
-
-    if (customerPhone === "") {
-
-        showMessage(
-            "error",
-            "Customer phone number is required."
-        );
-
-        $("#customer_phone").focus();
-
-        return false;
-
-    }
-
-    if (paymentMethod === "") {
-
-        showMessage(
-            "error",
-            "Please select a payment method."
-        );
-
-        $("#payment_method").focus();
-
-        return false;
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cart Validation
-    |--------------------------------------------------------------------------
-    */
-
-    if (cart.length === 0) {
-
-        showMessage(
-            "error",
-            "Your shopping cart is empty."
-        );
-
-        return false;
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Product Quantity Validation
-    |--------------------------------------------------------------------------
-    */
-
-    for (const item of cart) {
-
-        if (item.quantity <= 0) {
-
-            showMessage(
-                "error",
-                item.product_name +
-                " has an invalid quantity."
-            );
-
-            return false;
-
-        }
-
-        if (item.quantity > item.available_quantity) {
-
-            showMessage(
-                "error",
-                item.product_name +
-                " only has " +
-                item.available_quantity +
-                " item(s) available."
-            );
-
-            return false;
-
-        }
-
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Payment Validation
-    |--------------------------------------------------------------------------
-    */
-
-    const grandTotal =
-        parseFloat(
-            $("#grandTotal")
-                .text()
-                .replace(/[₦,]/g, "")
-        ) || 0;
-
-    const amountPaid =
-        parseFloat($("#amount_paid").val()) || 0;
-
-    if (amountPaid < 0) {
-
-        showMessage(
-            "error",
-            "Invalid payment amount."
-        );
-
-        return false;
-
-    }
-
-    if (
-        amountPaid < grandTotal &&
-        !confirm(
-            "Customer has not paid the full amount.\n\nContinue with this order?"
-        )
-    ) {
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Collect Order Data
-|--------------------------------------------------------------------------
-*/
-
-function collectOrderData() {
-
-    const subtotal =
-        cart.reduce(function (sum, item) {
-
-            return sum + Number(item.total);
-
-        }, 0);
-
-    const discount =
-        parseFloat($("#discount").val()) || 0;
-
-    const tax =
-        parseFloat($("#tax").val()) || 0;
-
-    const shipping =
-        parseFloat($("#shipping").val()) || 0;
-
-    const grandTotal =
-        subtotal -
-        discount +
-        tax +
-        shipping;
-
-    const amountPaid =
-        parseFloat($("#amount_paid").val()) || 0;
+    const balance = total - paid;
 
     return {
 
-        customer_name:
-            $("#customer_name").val().trim(),
+        subtotal,
 
-        customer_phone:
-            $("#customer_phone").val().trim(),
+        discount,
 
-        customer_email:
-            $("#customer_email").val().trim(),
+        tax,
 
-        payment_method:
-            $("#payment_method").val(),
+        shipping,
 
-        payment_status:
-            $("#payment_status").val(),
+        total,
 
-        order_number:
-            $("#order_number").val(),
+        paid,
 
-        notes:
-            $("#order_notes").val().trim(),
-
-        subtotal: subtotal,
-
-        discount: discount,
-
-        tax: tax,
-
-        shipping: shipping,
-
-        total_amount: grandTotal,
-
-        amount_paid: amountPaid,
-
-        balance:
-            amountPaid - grandTotal,
-
-        items: getCartData()
+        balance
 
     };
 
 }
 
-
-/*====================================================
-= PART 4C - SUBMIT ORDER
-====================================================*/
-
 /*
 |--------------------------------------------------------------------------
-| Show Checkout Loader
+| Update Totals UI
 |--------------------------------------------------------------------------
 */
 
-function showCheckoutLoader() {
+function updateTotals() {
 
-    checkoutLoader
-        .removeClass("hidden")
-        .addClass("flex");
+    const totals = calculateTotals();
 
-    checkoutBtn
-        .prop("disabled", true)
-        .text("Processing...");
+    $("#subtotal").text(
+        "₦" + formatMoney(totals.subtotal)
+    );
+
+    $("#totalAmount").text(
+        "₦" + formatMoney(totals.total)
+    );
+
+    $("#balance").text(
+        "₦" + formatMoney(totals.balance)
+    );
+
+    updateStatistics();
 
 }
 
-/*
-|--------------------------------------------------------------------------
-| Hide Checkout Loader
-|--------------------------------------------------------------------------
-*/
-
-function hideCheckoutLoader() {
-
-    checkoutLoader
-        .removeClass("flex")
-        .addClass("hidden");
-
-    checkoutBtn
-        .prop("disabled", false)
-        .text("Complete Order");
-
-}
 
 /*
 |--------------------------------------------------------------------------
-| Submit Order
+| Add Product To Cart Button
 |--------------------------------------------------------------------------
 */
 
-function submitOrder(orderData) {
+$(document).on("click", ".addToCart", function () {
 
-    showCheckoutLoader();
+    console.log("Add button clicked");
 
-    $.ajax({
+    const productId = $(this).data("id");
 
-        url: API_BASE + "/dashboard/orders/create.php",
+    console.log("Product ID:", productId);
 
-        type: "POST",
 
-        contentType: "application/json",
+    const product = products.find(function(item){
 
-        data: JSON.stringify(orderData),
-
-        dataType: "json",
-
-        headers: {
-
-            Authorization: "Bearer " + token
-
-        },
-
-        success: function (response) {
-
-            hideCheckoutLoader();
-
-            if (!response.status) {
-
-                showMessage(
-                    "error",
-                    response.message || "Unable to create order."
-                );
-
-                return;
-
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | Save Last Order
-            |--------------------------------------------------------------------------
-            */
-
-            lastOrderId = response.order_id;
-
-            /*
-            |--------------------------------------------------------------------------
-            | Clear Draft
-            |--------------------------------------------------------------------------
-            */
-
-            localStorage.removeItem("draft_order");
-
-            /*
-            |--------------------------------------------------------------------------
-            | Success Message
-            |--------------------------------------------------------------------------
-            */
-
-            showMessage(
-                "success",
-                response.message || "Order created successfully."
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | Reset Form
-            |--------------------------------------------------------------------------
-            */
-
-            resetOrder();
-
-            /*
-            |--------------------------------------------------------------------------
-            | Redirect To Receipt
-            |--------------------------------------------------------------------------
-            */
-
-            if (response.order_id) {
-
-                setTimeout(function () {
-
-                    window.location.href =
-                        "receipt.php?id=" +
-                        response.order_id;
-
-                }, 1000);
-
-            }
-
-        },
-
-        error: function (xhr) {
-
-            hideCheckoutLoader();
-
-            /*
-            |--------------------------------------------------------------------------
-            | Unauthorized
-            |--------------------------------------------------------------------------
-            */
-
-            if (xhr.status === 401) {
-
-                showMessage(
-                    "error",
-                    "Your login session has expired."
-                );
-
-                setTimeout(function () {
-
-                    window.location.href =
-                        "../login.php";
-
-                }, 1500);
-
-                return;
-
-            }
-
-            let message = "Server error.";
-
-            if (
-                xhr.responseJSON &&
-                xhr.responseJSON.message
-            ) {
-
-                message = xhr.responseJSON.message;
-
-            } else if (xhr.responseText) {
-
-                try {
-
-                    const json = JSON.parse(xhr.responseText);
-
-                    message = json.message;
-
-                } catch (e) {}
-
-            }
-
-            showMessage(
-                "error",
-                message
-            );
-
-            console.error(xhr);
-
-        }
+        return Number(item.inventory_id) === Number(productId);
 
     });
 
-}
 
-/*====================================================
-= PART 5A - RESET, DRAFTS & INITIALIZATION
-====================================================*/
+    console.log("Selected Product:", product);
 
-/*
-|--------------------------------------------------------------------------
-| Reset Order
-|--------------------------------------------------------------------------
-*/
 
-function resetOrder() {
+    if (!product) {
 
-    /*
-    |--------------------------------------------------------------------------
-    | Customer Information
-    |--------------------------------------------------------------------------
-    */
-
-    $("#orderForm")[0].reset();
-
-    /*
-    |--------------------------------------------------------------------------
-    | Payment Defaults
-    |--------------------------------------------------------------------------
-    */
-
-    $("#payment_method").val("cash");
-
-    $("#payment_status").val("paid");
-
-    amountPaid.val(0);
-
-    balance.val("₦0.00");
-
-    /*
-    |--------------------------------------------------------------------------
-    | Empty Cart
-    |--------------------------------------------------------------------------
-    */
-
-    cart = [];
-
-    renderCart();
-
-    calculateTotals();
-
-    /*
-    |--------------------------------------------------------------------------
-    | Clear Search
-    |--------------------------------------------------------------------------
-    */
-
-    productSearch.val("");
-
-    barcodeSearch.val("");
-
-    categoryFilter.val("");
-
-    stockFilter.val("");
-
-    sortProducts.val("name");
-
-    /*
-    |--------------------------------------------------------------------------
-    | Hide Product Card
-    |--------------------------------------------------------------------------
-    */
-
-    $("#selectedProductCard").addClass("hidden");
-
-    /*
-    |--------------------------------------------------------------------------
-    | Reload Products
-    |--------------------------------------------------------------------------
-    */
-
-    currentPage = 1;
-
-    loadProducts();
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Clear Cart
-|--------------------------------------------------------------------------
-*/
-
-$("#clearCartBtn").on("click", function () {
-
-    if (cart.length === 0) {
+        showMessage(
+            "error",
+            "Product not found"
+        );
 
         return;
 
     }
 
-    if (!confirm("Remove every item from the cart?")) {
+
+    const existing = getCartItem(product.inventory_id);
+
+
+    // Prevent duplicate product
+    if (existing) {
+
+        showMessage(
+            "warning",
+            "Product already exists in cart"
+        );
 
         return;
 
     }
 
-    cart = [];
+
+    cart.push({
+
+        inventory_id: product.inventory_id,
+
+        name: product.name,
+
+        barcode: product.barcode,
+
+        selling_price: product.selling_price,
+
+        available_quantity: product.quantity,
+
+        quantity: 1
+
+    });
+
+
+    console.log("Updated Cart:", cart);
+
+
+    saveCart();
 
     renderCart();
 
-    calculateTotals();
+    updateTotals();
+
 
     showMessage(
         "success",
-        "Cart cleared successfully."
+        "Product added to cart successfully"
     );
 
 });
 
-/*
-|--------------------------------------------------------------------------
-| Cancel Order
-|--------------------------------------------------------------------------
-*/
+function renderCart() {
+    console.log("renderCart function called");
 
-$("#cancelOrderBtn").on("click", function () {
 
-    if (
-        confirm(
-            "Cancel this order and clear everything?"
-        )
-    ) {
+    const cartBody = $("#cartTable");
 
-        localStorage.removeItem("draft_order");
+    console.log("Cart body:", cartBody);
 
-        resetOrder();
+
+    console.log("Current cart:", cart);
+
+
+    cartBody.empty();
+
+    console.log("Rendering Cart:", cart);
+
+
+    if(cart.length === 0){
+
+        cartBody.html(`
+
+        <tr id="emptyCart">
+
+            <td colspan="5"
+                class="text-center py-16 text-gray-500">
+
+                No products added.
+
+            </td>
+
+        </tr>
+
+        `);
+
+
+        updateSummary();
+
+        return;
 
     }
 
-});
+
+
+    cart.forEach(function(item,index){
+
+
+        console.log("Rendering Item:", item);
+
+
+
+        const lineTotal =
+            Number(item.quantity) *
+            Number(item.selling_price);
+
+
+
+        cartBody.append(`
+
+        <tr class="border-b">
+
+            <td class="px-5 py-4">
+
+                ${item.name}
+
+            </td>
+
+
+            <td class="px-5 py-4 text-center">
+
+                ${item.quantity}
+
+            </td>
+
+
+            <td class="px-5 py-4 text-right">
+
+                ₦${formatMoney(item.selling_price)}
+
+            </td>
+
+
+            <td class="px-5 py-4 text-right">
+
+                ₦${formatMoney(lineTotal)}
+
+            </td>
+
+
+            <td class="px-5 py-4 text-center">
+
+                <button 
+                class="removeItem bg-red-500 text-white px-3 py-2 rounded"
+                data-index="${index}">
+
+                Remove
+
+                </button>
+
+            </td>
+
+
+        </tr>
+
+        `);
+
+
+    });
+
+
+
+    updateSummary();
+
+} 
 
 /*
 |--------------------------------------------------------------------------
-| Save Draft
+| CALCULATE TOTALS
 |--------------------------------------------------------------------------
 */
 
-function saveDraft() {
+function calculateTotals() {
 
-    const draft = {
+    let subtotal = 0;
 
-        customer_name:
-            $("#customer_name").val(),
 
-        customer_phone:
-            $("#customer_phone").val(),
+    cart.forEach(function(item) {
 
-        customer_email:
-            $("#customer_email").val(),
+        const price = Number(item.selling_price) || 0;
 
-        payment_method:
-            $("#payment_method").val(),
+        const quantity = Number(item.quantity) || 0;
 
-        payment_status:
-            $("#payment_status").val(),
 
-        amount_paid:
-            amountPaid.val(),
+        subtotal += price * quantity;
 
-        cart: cart
+    });
+
+
+    const discount =
+        Number($("#discount").val()) || 0;
+
+
+    const tax =
+        Number($("#tax").val()) || 0;
+
+
+    const shipping =
+        Number($("#shipping").val()) || 0;
+
+
+    const grandTotal =
+        (subtotal - discount) + tax + shipping;
+
+
+    const amountPaid =
+        Number($("#amountPaid").val()) || 0;
+
+
+    const balance =
+        grandTotal - amountPaid;
+
+
+
+    return {
+
+        subtotal,
+
+        discount,
+
+        tax,
+
+        shipping,
+
+        grandTotal,
+
+        amountPaid,
+
+        balance
 
     };
 
-    localStorage.setItem(
+}
 
-        "draft_order",
 
-        JSON.stringify(draft)
+/*
+|--------------------------------------------------------------------------
+| UPDATE SUMMARY
+|--------------------------------------------------------------------------
+*/
 
+function updateSummary() {
+
+    const totals = calculateTotals();
+
+
+    // Subtotal
+    $("#subtotal").text(
+        "₦" + formatMoney(totals.subtotal)
     );
 
-    showMessage(
 
-        "success",
-
-        "Draft saved."
-
+    // Grand Total
+    $("#grandTotal").text(
+        "₦" + formatMoney(totals.grandTotal)
     );
+
+
+    // Number of different products in cart
+    $("#cartCount").text(
+        cart.length
+    );
+
+
+    // Total quantity of all products
+    let qty = 0;
+
+
+    cart.forEach(function(item){
+
+        qty += Number(item.quantity) || 0;
+
+    });
+
+
+    $("#totalQty").text(qty);
+
+
+    // Balance
+    $("#balance").text(
+        "₦" + formatMoney(totals.balance)
+    );
+
 
 }
 
-$("#saveDraftBtn").on("click", function () {
 
-    saveDraft();
+/*
+|--------------------------------------------------------------------------
+| AUTO UPDATE TOTALS
+|--------------------------------------------------------------------------
+*/
+
+$("#discount, #tax, #shipping, #amountPaid")
+.on("keyup change", function () {
+
+    console.log("Updating totals...");
+
+    updateSummary();
 
 });
 
-/*
-|--------------------------------------------------------------------------
-| Load Draft
-|--------------------------------------------------------------------------
-*/
 
-function loadDraft() {
 
-    const draft =
 
-        localStorage.getItem("draft_order");
 
-    if (!draft) {
 
-        return;
 
-    }
-
-    try {
-
-        const data =
-
-            JSON.parse(draft);
-
-        $("#customer_name").val(
-
-            data.customer_name || ""
-
-        );
-
-        $("#customer_phone").val(
-
-            data.customer_phone || ""
-
-        );
-
-        $("#customer_email").val(
-
-            data.customer_email || ""
-
-        );
-
-        $("#payment_method").val(
-
-            data.payment_method || "cash"
-
-        );
-
-        $("#payment_status").val(
-
-            data.payment_status || "paid"
-
-        );
-
-        amountPaid.val(
-
-            data.amount_paid || 0
-
-        );
-
-        cart =
-
-            data.cart || [];
-
-        renderCart();
-
-        calculateTotals();
-
-    } catch (e) {
-
-        console.error(e);
-
-        localStorage.removeItem(
-
-            "draft_order"
-
-        );
-
-    }
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Print Receipt
-|--------------------------------------------------------------------------
-*/
-
-function printReceipt(orderId) {
-
-    if (!orderId) {
-
-        return;
-
-    }
-
-    window.open(
-
-        "receipt.php?id=" + orderId,
-
-        "_blank"
-
-    );
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Go To Orders
-|--------------------------------------------------------------------------
-*/
-
-function goToOrders() {
-
-    window.location.href =
-
-        "orders.php";
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| New Order
-|--------------------------------------------------------------------------
-*/
-
-function newOrder() {
-
-    resetOrder();
-
-    $("html, body").animate({
-
-        scrollTop: 0
-
-    }, 300);
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| Auto Save Before Leaving
-|--------------------------------------------------------------------------
-*/
-
-window.addEventListener(
-
-    "beforeunload",
-
-    function () {
-
-        if (cart.length > 0) {
-
-            saveDraft();
-
-        }
-
-    }
-
-);
-
-/*
-|--------------------------------------------------------------------------
-| Network Status
-|--------------------------------------------------------------------------
-*/
-
-window.addEventListener(
-
-    "offline",
-
-    function () {
-
-        showMessage(
-
-            "error",
-
-            "No internet connection."
-
-        );
-
-    }
-
-);
-
-window.addEventListener(
-
-    "online",
-
-    function () {
-
-        showMessage(
-
-            "success",
-
-            "Internet connection restored."
-
-        );
-
-    }
-
-);
-
-/*
-|--------------------------------------------------------------------------
-| Keyboard Shortcuts
-|--------------------------------------------------------------------------
-*/
-
-$(document).keydown(function (e) {
-
-    /*
-    | F2 → Product Search
-    */
-
-    if (e.key === "F2") {
-
-        e.preventDefault();
-
-        productSearch.focus();
-
-    }
-
-    /*
-    | F4 → Checkout
-    */
-
-    if (e.key === "F4") {
-
-        e.preventDefault();
-
-        checkoutBtn.click();
-
-    }
-
-    /*
-    | ESC → Clear Search
-    */
-
-    if (e.key === "Escape") {
-
-        productSearch.val("");
-
-        barcodeSearch.val("");
-
-        applyFilters();
-
-    }
-
-});
-
-/*
-|--------------------------------------------------------------------------
-| Page Initialization
-|--------------------------------------------------------------------------
-*/
-
-$(document).ready(function () {
-
-    loadProducts();
-
-    loadDraft();
-
-    calculateTotals();
-
-});
 
 
 </script>
-
-

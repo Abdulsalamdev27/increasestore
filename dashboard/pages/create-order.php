@@ -57,238 +57,6 @@ require_once __DIR__ . "/../includes/header.php";
         class="hidden mb-6 rounded-xl px-5 py-4 text-sm font-medium">
     </div>
 
-    <!-- ========================================= -->
-    <!-- ORDER STATISTICS -->
-    <!-- ========================================= -->
-
-    <article
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-
-        <!-- Products -->
-
-        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
-
-            <p class="text-sm text-gray-500">
-                Products in Cart
-            </p>
-
-            <h2
-                id="cartItemsCount"
-                class="text-3xl font-bold mt-2 text-indigo-600">
-
-                0
-
-            </h2>
-
-        </div>
-
-        <!-- Quantity -->
-
-        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
-
-            <p class="text-sm text-gray-500">
-                Total Quantity
-            </p>
-
-            <h2
-                id="cartQuantity"
-                class="text-3xl font-bold mt-2 text-green-600">
-
-                0
-
-            </h2>
-
-        </div>
-
-        <!-- Total -->
-
-        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
-
-            <p class="text-sm text-gray-500">
-                Order Total
-            </p>
-
-            <h2
-                id="cartTotal"
-                class="text-3xl font-bold mt-2 text-blue-600">
-
-                ₦0.00
-
-            </h2>
-
-        </div>
-
-        <!-- Balance -->
-
-        <div class="bg-white rounded-2xl shadow border border-gray-200 p-6">
-
-            <p class="text-sm text-gray-500">
-                Balance Due
-            </p>
-
-            <h2
-                id="balanceDue"
-                class="text-3xl font-bold mt-2 text-red-600">
-
-                ₦0.00
-
-            </h2>
-
-        </div>
-
-    </article>
-
-    <!-- ========================================= -->
-    <!-- CUSTOMER INFORMATION -->
-    <!-- ========================================= -->
-
-    <article
-        class="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
-
-        <!-- Header -->
-
-        <div class="border-b border-gray-200 px-6 py-5">
-
-            <h2 class="text-lg font-semibold">
-
-                Customer Information
-
-            </h2>
-
-            <p class="text-sm text-gray-500 mt-1">
-
-                Enter customer details before creating the order.
-
-            </p>
-
-        </div>
-
-        <!-- Body -->
-
-        <div class="p-6">
-
-            <div class="grid lg:grid-cols-2 gap-6">
-
-                <!-- Customer Name -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-
-                        Customer Name *
-
-                    </label>
-
-                    <input
-                        type="text"
-                        id="customerName"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                        placeholder="Enter customer name">
-
-                </div>
-
-                <!-- Phone -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-
-                        Phone Number *
-
-                    </label>
-
-                    <input
-                        type="text"
-                        id="customerPhone"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                        placeholder="08012345678">
-
-                </div>
-
-                <!-- Email -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-
-                        Email Address
-
-                    </label>
-
-                    <input
-                        type="email"
-                        id="customerEmail"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                        placeholder="customer@email.com">
-
-                </div>
-
-                <!-- Payment -->
-
-                <div>
-
-                    <label class="block text-sm font-medium mb-2">
-
-                        Payment Method *
-
-                    </label>
-
-                    <select
-                        id="paymentMethod"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
-
-                        <option value="">
-                            Select Payment Method
-                        </option>
-
-                        <option value="Cash">
-                            Cash
-                        </option>
-
-                        <option value="POS">
-                            POS
-                        </option>
-
-                        <option value="Transfer">
-                            Bank Transfer
-                        </option>
-
-                        <option value="Card">
-                            Card
-                        </option>
-
-                        <option value="Credit">
-                            Credit
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <!-- Notes -->
-
-                <div class="lg:col-span-2">
-
-                    <label class="block text-sm font-medium mb-2">
-
-                        Notes
-
-                    </label>
-
-                    <textarea
-                        id="orderNotes"
-                        rows="4"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500"
-                        placeholder="Additional order notes..."></textarea>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </article>
-
 
     <!-- ===================================================== -->
     <!-- PRODUCT SEARCH -->
@@ -710,23 +478,29 @@ require_once __DIR__ . "/../includes/header.php";
 
         <article class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
 
-            <div class="border-b border-gray-200 px-6 py-5 flex items-center justify-between">
+        <div class="border-b border-gray-200 px-6 py-5 flex items-center justify-between">
 
-                <div>
+            <div>
 
-                    <h2 class="text-lg font-semibold">
+                <h2 class="text-lg font-semibold">
+                    Shopping Cart
+                </h2>
 
-                        Shopping Cart
+                <p class="text-sm text-gray-500 mt-1">
+                    Products added to this order.
+                </p>
 
-                    </h2>
+            </div>
 
-                    <p class="text-sm text-gray-500 mt-1">
+            <div class="flex items-center gap-3">
 
-                        Products added to this order.
+                <button
+                    id="clearCart"
+                    class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white">
 
-                    </p>
+                    Remove All
 
-                </div>
+                </button>
 
                 <span
                     id="cartCount"
@@ -737,6 +511,8 @@ require_once __DIR__ . "/../includes/header.php";
                 </span>
 
             </div>
+
+        </div>
 
             <div class="overflow-x-auto">
 
@@ -911,15 +687,59 @@ require_once __DIR__ . "/../includes/header.php";
     <!-- PAYMENT -->
     <!-- ===================================== -->
 
-    <section class="grid lg:grid-cols-2 gap-6 mt-8">
+<section class="grid lg:grid-cols-2 gap-6 mt-8">
 
-        <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+    <!-- ===================================== -->
+    <!-- PAYMENT + CUSTOMER -->
+    <!-- ===================================== -->
 
-            <h2 class="text-lg font-semibold mb-6">
+    <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
 
-                Payment Information
+        <div class="flex items-center justify-between mb-6">
 
-            </h2>
+            <div>
+
+                <h2 class="text-lg font-semibold">
+
+                    Payment Information
+
+                </h2>
+
+                <p class="text-sm text-gray-500 mt-1">
+
+                    Customer details and payment information.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ============================== -->
+        <!-- CUSTOMER DETAILS -->
+        <!-- ============================== -->
+
+        <div class="rounded-xl border border-gray-200 bg-gray-50 p-5 mb-6">
+
+            <div class="flex items-center justify-between mb-4">
+
+                <h3 class="font-semibold">
+
+                    Customer Details
+
+                </h3>
+
+                <span
+
+                    id="customerStatus"
+
+                    class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
+
+                    Walk-in Customer
+
+                </span>
+
+            </div>
 
             <div class="grid md:grid-cols-2 gap-5">
 
@@ -927,39 +747,21 @@ require_once __DIR__ . "/../includes/header.php";
 
                     <label class="block mb-2 text-sm font-medium">
 
-                        Payment Method
+                        Customer Name
 
                     </label>
 
-                    <select
-                        id="paymentMethod"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+                    <input
 
-                        <option value="Cash">
+                        type="text"
 
-                            Cash
+                        id="customerName"
 
-                        </option>
+                        readonly
 
-                        <option value="Transfer">
+                        placeholder="Walk-in Customer"
 
-                            Transfer
-
-                        </option>
-
-                        <option value="POS">
-
-                            POS
-
-                        </option>
-
-                        <option value="Card">
-
-                            Card
-
-                        </option>
-
-                    </select>
+                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
 
                 </div>
 
@@ -967,111 +769,235 @@ require_once __DIR__ . "/../includes/header.php";
 
                     <label class="block mb-2 text-sm font-medium">
 
-                        Amount Paid
+                        Phone Number
 
                     </label>
 
                     <input
-                        type="number"
-                        id="amountPaid"
-                        value="0"
-                        class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                        type="text"
+
+                        id="customerPhone"
+
+                        readonly
+
+                        placeholder="080xxxxxxxx"
+
+                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
+
+                </div>
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+
+                        Email Address
+
+                    </label>
+
+                    <input
+
+                        type="email"
+
+                        id="customerEmail"
+
+                        readonly
+
+                        placeholder="customer@email.com"
+
+                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
+
+                </div>
+
+                <div>
+
+                    <label class="block mb-2 text-sm font-medium">
+
+                        Customer Code
+
+                    </label>
+
+                    <input
+
+                        type="text"
+
+                        id="customerCode"
+
+                        readonly
+
+                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
 
                 </div>
 
             </div>
 
-            <div class="mt-5">
+        </div>
+
+        <!-- ============================== -->
+        <!-- PAYMENT -->
+        <!-- ============================== -->
+
+        <div class="grid md:grid-cols-2 gap-5">
+
+            <div>
 
                 <label class="block mb-2 text-sm font-medium">
 
-                    Notes
+                    Payment Method
 
                 </label>
 
-                <textarea
-                    id="notes"
-                    rows="4"
-                    class="w-full rounded-xl border border-gray-300 px-4 py-3"
-                    placeholder="Order notes..."></textarea>
+                <select
+
+                    id="paymentMethod"
+
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                    <option value="Cash">
+
+                        Cash
+
+                    </option>
+
+                    <option value="Transfer">
+
+                        Transfer
+
+                    </option>
+
+                    <option value="POS">
+
+                        POS
+
+                    </option>
+
+                    <option value="Card">
+
+                        Card
+
+                    </option>
+
+                </select>
 
             </div>
 
-        </article>
+            <div>
 
-        <!-- ============================== -->
-        <!-- BALANCE -->
-        <!-- ============================== -->
+                <label class="block mb-2 text-sm font-medium">
 
-        <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+                    Amount Paid
 
-            <h2 class="text-lg font-semibold mb-6">
+                </label>
 
-                Payment Summary
+                <input
 
-            </h2>
+                    type="number"
 
-            <div class="space-y-5">
+                    id="amountPaid"
 
-                <div class="flex justify-between">
+                    value="0"
 
-                    <span>
-
-                        Total Amount
-
-                    </span>
-
-                    <strong
-                        id="summaryTotal">
-
-                        ₦0.00
-
-                    </strong>
-
-                </div>
-
-                <div class="flex justify-between">
-
-                    <span>
-
-                        Amount Paid
-
-                    </span>
-
-                    <strong
-                        id="summaryPaid">
-
-                        ₦0.00
-
-                    </strong>
-
-                </div>
-
-                <hr>
-
-                <div class="flex justify-between text-xl font-bold">
-
-                    <span>
-
-                        Balance
-
-                    </span>
-
-                    <span
-                        id="balanceAmount"
-                        class="text-red-600">
-
-                        ₦0.00
-
-                    </span>
-
-                </div>
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3">
 
             </div>
 
-        </article>
+        </div>
 
-    </section>
+        <div class="mt-5">
+
+            <label class="block mb-2 text-sm font-medium">
+
+                Notes
+
+            </label>
+
+            <textarea
+
+                id="notes"
+
+                rows="4"
+
+                placeholder="Order notes..."
+
+                class="w-full rounded-xl border border-gray-300 px-4 py-3"></textarea>
+
+        </div>
+
+    </article>
+
+    <!-- ===================================== -->
+    <!-- PAYMENT SUMMARY -->
+    <!-- ===================================== -->
+
+    <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
+
+        <h2 class="text-lg font-semibold mb-6">
+
+            Payment Summary
+
+        </h2>
+
+        <div class="space-y-5">
+
+            <div class="flex justify-between">
+
+                <span>
+
+                    Total Amount
+
+                </span>
+
+                <strong id="summaryTotal">
+
+                    ₦0.00
+
+                </strong>
+
+            </div>
+
+            <div class="flex justify-between">
+
+                <span>
+
+                    Amount Paid
+
+                </span>
+
+                <strong id="summaryPaid">
+
+                    ₦0.00
+
+                </strong>
+
+            </div>
+
+            <hr>
+
+            <div class="flex justify-between text-xl font-bold">
+
+                <span>
+
+                    Balance
+
+                </span>
+
+                <span
+
+                    id="balanceAmount"
+
+                    class="text-red-600">
+
+                    ₦0.00
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </article>
+
+</section>
 
     <!-- ===================================== -->
     <!-- ACTION BUTTONS -->
@@ -1151,7 +1077,6 @@ if (!token) {
 | GLOBAL VARIABLES
 |--------------------------------------------------------------------------
 */
-
 let products = [];
 
 let filteredProducts = [];
@@ -2489,11 +2414,73 @@ function saveCart() {
 
 function loadCart() {
 
-    cart = JSON.parse(
-        localStorage.getItem("order_cart") || "[]"
-    );
+    const savedCart = localStorage.getItem("order_cart");
+
+    if (savedCart) {
+
+        cart = JSON.parse(savedCart);
+
+    } else {
+
+        cart = [];
+
+    }
+
+    console.log("Cart Loaded:", cart);
 
 }
+
+
+//clear cart
+
+$(document).on("click", "#clearCart", function () {
+
+    if (cart.length === 0) {
+
+        showMessage(
+            "warning",
+            "Your cart is already empty."
+        );
+
+        return;
+
+    }
+
+    if (!confirm("Are you sure you want to remove all items from the cart?")) {
+
+        return;
+
+    }
+
+    console.log("Clearing Cart:", cart);
+
+    cart = [];
+
+    saveCart();
+
+    renderCart();
+
+    updateSummary();
+
+    console.log("Cart Cleared:", cart);
+
+    showMessage(
+        "success",
+        "All products have been removed from the cart."
+    );
+
+});
+
+$(document).ready(function () {
+
+    loadCart();
+
+    renderCart();
+
+    updateSummary();
+
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -2702,30 +2689,18 @@ console.log("All Keys:", Object.keys(product || {}));
 });
 
 function renderCart() {
-    console.log("renderCart function called");
-
 
     const cartBody = $("#cartTable");
 
-    console.log("Cart body:", cartBody);
-
-
-    console.log("Current cart:", cart);
-
-
     cartBody.empty();
 
-    console.log("Rendering Cart:", cart);
-
-
-    if(cart.length === 0){
+    if (cart.length === 0) {
 
         cartBody.html(`
 
         <tr id="emptyCart">
 
-            <td colspan="5"
-                class="text-center py-16 text-gray-500">
+            <td colspan="5" class="text-center py-16 text-gray-500">
 
                 No products added.
 
@@ -2735,27 +2710,17 @@ function renderCart() {
 
         `);
 
-
         updateSummary();
 
         return;
 
     }
 
-
-
-    cart.forEach(function(item,index){
-
-
-        console.log("Rendering Item:", item);
-
-
+    cart.forEach(function(item, index){
 
         const lineTotal =
             Number(item.quantity) *
             Number(item.selling_price);
-
-
 
         cartBody.append(`
 
@@ -2763,17 +2728,60 @@ function renderCart() {
 
             <td class="px-5 py-4">
 
-                ${item.name}
+                <div class="font-medium">
+
+                    ${item.name}
+
+                </div>
+
+                <div class="text-xs text-gray-500">
+
+                    ${item.barcode || ""}
+
+                </div>
 
             </td>
-
 
             <td class="px-5 py-4 text-center">
 
-                ${item.quantity}
+                <div class="flex items-center justify-center gap-2">
+
+                    <button
+                        class="decreaseQty
+                               w-8
+                               h-8
+                               rounded
+                               bg-gray-200
+                               hover:bg-gray-300"
+                        data-index="${index}">
+
+                        -
+
+                    </button>
+
+                    <span class="w-8 text-center font-semibold">
+
+                        ${item.quantity}
+
+                    </span>
+
+                    <button
+                        class="increaseQty
+                               w-8
+                               h-8
+                               rounded
+                               bg-indigo-600
+                               hover:bg-indigo-700
+                               text-white"
+                        data-index="${index}">
+
+                        +
+
+                    </button>
+
+                </div>
 
             </td>
-
 
             <td class="px-5 py-4 text-right">
 
@@ -2781,45 +2789,145 @@ function renderCart() {
 
             </td>
 
-
-            <td class="px-5 py-4 text-right">
+            <td class="px-5 py-4 text-right font-semibold">
 
                 ₦${formatMoney(lineTotal)}
 
             </td>
 
-
             <td class="px-5 py-4 text-center">
 
-                <button 
-                class="removeItem bg-red-500 text-white px-3 py-2 rounded"
-                data-index="${index}">
+                <button
+                    class="removeItem
+                           px-3
+                           py-2
+                           rounded-lg
+                           bg-red-500
+                           hover:bg-red-600
+                           text-white"
+                    data-index="${index}">
 
-                Remove
+                    Remove
 
                 </button>
 
             </td>
 
-
         </tr>
 
         `);
 
-
     });
-
-
 
     updateSummary();
 
-}  
+}
 
 /*
 |--------------------------------------------------------------------------
 | CALCULATE TOTALS
 |--------------------------------------------------------------------------
 */
+
+// remove
+$(document).on("click", ".removeItem", function () {
+
+    const index = Number($(this).data("index"));
+
+    const item = cart[index];
+
+    if (!item) {
+
+        showMessage(
+            "error",
+            "Product not found in cart."
+        );
+
+        return;
+
+    }
+
+    if (!confirm(`Are you sure you want to remove "${item.name}" from the cart?`)) {
+
+        return;
+
+    }
+
+    console.log("Removing Item:", item);
+
+    cart.splice(index, 1);
+
+    console.log("Updated Cart:", cart);
+
+    saveCart();
+
+    renderCart();
+
+    updateSummary();
+
+    showMessage(
+        "success",
+        "Product removed successfully."
+    );
+
+});
+
+// increase
+$(document).on("click", ".increaseQty", function () {
+
+    const index = $(this).data("index");
+
+    const item = cart[index];
+
+    if (item.quantity >= item.available_quantity) {
+
+        showMessage(
+            "warning",
+            "Cannot add more. Stock limit reached."
+        );
+
+        return;
+
+    }
+
+    item.quantity++;
+
+    saveCart();
+
+    renderCart();
+
+    updateSummary();
+
+    showMessage(
+        "success",
+        "Quantity updated successfully."
+    );
+
+});
+
+// Decrease
+
+$(document).on("click", ".decreaseQty", function () {
+
+    const index = $(this).data("index");
+
+    if (cart[index].quantity > 1) {
+
+        cart[index].quantity--;
+
+    } else {
+
+        cart.splice(index, 1);
+
+    }
+
+    saveCart();
+
+    renderCart();
+
+    updateSummary();
+
+});
 
 function calculateTotals() {
 

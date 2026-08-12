@@ -478,41 +478,41 @@ require_once __DIR__ . "/../includes/header.php";
 
         <article class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
 
-        <div class="border-b border-gray-200 px-6 py-5 flex items-center justify-between">
+            <div class="border-b border-gray-200 px-6 py-5 flex items-center justify-between">
 
-            <div>
+                <div>
 
-                <h2 class="text-lg font-semibold">
-                    Shopping Cart
-                </h2>
+                    <h2 class="text-lg font-semibold">
+                        Shopping Cart
+                    </h2>
 
-                <p class="text-sm text-gray-500 mt-1">
-                    Products added to this order.
-                </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Products added to this order.
+                    </p>
+
+                </div>
+
+                <div class="flex items-center gap-3">
+
+                    <button
+                        id="clearCart"
+                        class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white">
+
+                        Remove All
+
+                    </button>
+
+                    <span
+                        id="cartCount"
+                        class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold">
+
+                        0 Items
+
+                    </span>
+
+                </div>
 
             </div>
-
-            <div class="flex items-center gap-3">
-
-                <button
-                    id="clearCart"
-                    class="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white">
-
-                    Remove All
-
-                </button>
-
-                <span
-                    id="cartCount"
-                    class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-semibold">
-
-                    0 Items
-
-                </span>
-
-            </div>
-
-        </div>
 
             <div class="overflow-x-auto">
 
@@ -683,9 +683,9 @@ require_once __DIR__ . "/../includes/header.php";
 
     </section>
 
-    <!-- ===================================== -->
-    <!-- PAYMENT -->
-    <!-- ===================================== -->
+<!-- ===================================== -->
+<!-- PAYMENT -->
+<!-- ===================================== -->
 
 <section class="grid lg:grid-cols-2 gap-6 mt-8">
 
@@ -700,19 +700,22 @@ require_once __DIR__ . "/../includes/header.php";
             <div>
 
                 <h2 class="text-lg font-semibold">
-
                     Payment Information
-
                 </h2>
 
                 <p class="text-sm text-gray-500 mt-1">
-
                     Customer details and payment information.
-
                 </p>
 
             </div>
 
+        </div>
+
+        <!-- RESPONSE -->
+
+        <div
+            id="responseBox"
+            class="hidden rounded-xl px-4 py-3 mb-5">
         </div>
 
         <!-- ============================== -->
@@ -724,15 +727,11 @@ require_once __DIR__ . "/../includes/header.php";
             <div class="flex items-center justify-between mb-4">
 
                 <h3 class="font-semibold">
-
                     Customer Details
-
                 </h3>
 
                 <span
-
                     id="customerStatus"
-
                     class="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs">
 
                     Walk-in Customer
@@ -746,21 +745,13 @@ require_once __DIR__ . "/../includes/header.php";
                 <div>
 
                     <label class="block mb-2 text-sm font-medium">
-
                         Customer Name
-
                     </label>
 
                     <input
-
                         type="text"
-
                         id="customerName"
-
-                        readonly
-
                         placeholder="Walk-in Customer"
-
                         class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
 
                 </div>
@@ -768,21 +759,13 @@ require_once __DIR__ . "/../includes/header.php";
                 <div>
 
                     <label class="block mb-2 text-sm font-medium">
-
                         Phone Number
-
                     </label>
 
                     <input
-
                         type="text"
-
                         id="customerPhone"
-
-                        readonly
-
                         placeholder="080xxxxxxxx"
-
                         class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
 
                 </div>
@@ -790,21 +773,13 @@ require_once __DIR__ . "/../includes/header.php";
                 <div>
 
                     <label class="block mb-2 text-sm font-medium">
-
                         Email Address
-
                     </label>
 
                     <input
-
                         type="email"
-
                         id="customerEmail"
-
-                        readonly
-
                         placeholder="customer@email.com"
-
                         class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
 
                 </div>
@@ -812,19 +787,12 @@ require_once __DIR__ . "/../includes/header.php";
                 <div>
 
                     <label class="block mb-2 text-sm font-medium">
-
                         Customer Code
-
                     </label>
 
                     <input
-
                         type="text"
-
                         id="customerCode"
-
-                        readonly
-
                         class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3">
 
                 </div>
@@ -833,49 +801,26 @@ require_once __DIR__ . "/../includes/header.php";
 
         </div>
 
-        <!-- ============================== -->
         <!-- PAYMENT -->
-        <!-- ============================== -->
 
         <div class="grid md:grid-cols-2 gap-5">
 
             <div>
 
                 <label class="block mb-2 text-sm font-medium">
-
                     Payment Method
-
                 </label>
 
                 <select
-
                     id="paymentMethod"
-
                     class="w-full rounded-xl border border-gray-300 px-4 py-3">
 
-                    <option value="Cash">
-
-                        Cash
-
-                    </option>
-
-                    <option value="Transfer">
-
-                        Transfer
-
-                    </option>
-
-                    <option value="POS">
-
-                        POS
-
-                    </option>
-
-                    <option value="Card">
-
-                        Card
-
-                    </option>
+                    <option value="cash">Cash</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="pos">POS</option>
+                    <option value="card">Card</option>
+                    <option value="mobile_money">Mobile Money</option>
+                    <option value="other">Other</option>
 
                 </select>
 
@@ -884,42 +829,75 @@ require_once __DIR__ . "/../includes/header.php";
             <div>
 
                 <label class="block mb-2 text-sm font-medium">
-
-                    Amount Paid
-
+                    Payment Status
                 </label>
 
                 <input
+                    type="text"
+                    id="paymentStatus"
+                    readonly
+                    value="Pending"
+                    class="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3">
 
+            </div>
+
+            <div>
+
+                <label class="block mb-2 text-sm font-medium">
+                    Amount Paid
+                </label>
+
+                <input
                     type="number"
-
                     id="amountPaid"
-
                     value="0"
-
+                    min="0"
                     class="w-full rounded-xl border border-gray-300 px-4 py-3">
 
             </div>
+
+            <!-- <div>
+
+                <label class="block mb-2 text-sm font-medium">
+                    Balance
+                </label>
+
+                <input
+                    type="text"
+                    id="balanceDisplay"
+                    value="₦0.00"
+                    class="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3">
+
+            </div> -->
 
         </div>
 
         <div class="mt-5">
 
             <label class="block mb-2 text-sm font-medium">
-
                 Notes
-
             </label>
 
             <textarea
-
                 id="notes"
-
                 rows="4"
-
                 placeholder="Order notes..."
-
                 class="w-full rounded-xl border border-gray-300 px-4 py-3"></textarea>
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <div class="mt-6">
+
+            <button
+                type="button"
+                id="createOrderBtn"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-3 font-semibold">
+
+                Create Order
+
+            </button>
 
         </div>
 
@@ -932,41 +910,27 @@ require_once __DIR__ . "/../includes/header.php";
     <article class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6">
 
         <h2 class="text-lg font-semibold mb-6">
-
             Payment Summary
-
         </h2>
 
         <div class="space-y-5">
 
             <div class="flex justify-between">
 
-                <span>
-
-                    Total Amount
-
-                </span>
+                <span>Total Amount</span>
 
                 <strong id="summaryTotal">
-
                     ₦0.00
-
                 </strong>
 
             </div>
 
             <div class="flex justify-between">
 
-                <span>
-
-                    Amount Paid
-
-                </span>
+                <span>Amount Paid</span>
 
                 <strong id="summaryPaid">
-
                     ₦0.00
-
                 </strong>
 
             </div>
@@ -975,16 +939,10 @@ require_once __DIR__ . "/../includes/header.php";
 
             <div class="flex justify-between text-xl font-bold">
 
-                <span>
-
-                    Balance
-
-                </span>
+                <span>Balance</span>
 
                 <span
-
                     id="balanceAmount"
-
                     class="text-red-600">
 
                     ₦0.00
@@ -999,37 +957,6 @@ require_once __DIR__ . "/../includes/header.php";
 
 </section>
 
-    <!-- ===================================== -->
-    <!-- ACTION BUTTONS -->
-    <!-- ===================================== -->
-
-    <section class="mt-8 flex justify-end gap-4">
-
-        <button
-            id="clearOrder"
-            class="px-6 py-3 rounded-xl bg-gray-200 hover:bg-gray-300">
-
-            Clear Order
-
-        </button>
-
-        <button
-            id="saveDraft"
-            class="px-6 py-3 rounded-xl bg-yellow-500 text-white hover:bg-yellow-600">
-
-            Save Draft
-
-        </button>
-
-        <button
-            id="createOrder"
-            class="px-8 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">
-
-            Create Order
-
-        </button>
-
-    </section>
 
 
 
@@ -1038,8 +965,6 @@ require_once __DIR__ . "/../includes/header.php";
 <?php
 require_once __DIR__ . "/../includes/footer.php";
 ?>
-
-
 
 <script>
 
@@ -1153,36 +1078,36 @@ function hideLoader() {
 |--------------------------------------------------------------------------
 */
 
-function showMessage(type, message) {
+// function showMessage(type, message) {
 
-    responseBox
-        .removeClass(
-            "hidden bg-green-100 bg-red-100 text-green-700 text-red-700"
-        );
+//     responseBox
+//         .removeClass(
+//             "hidden bg-green-100 bg-red-100 text-green-700 text-red-700"
+//         );
 
-    if (type === "success") {
+//     if (type === "success") {
 
-        responseBox.addClass(
-            "bg-green-100 text-green-700"
-        );
+//         responseBox.addClass(
+//             "bg-green-100 text-green-700"
+//         );
 
-    } else {
+//     } else {
 
-        responseBox.addClass(
-            "bg-red-100 text-red-700"
-        );
+//         responseBox.addClass(
+//             "bg-red-100 text-red-700"
+//         );
 
-    }
+//     }
 
-    responseBox.text(message);
+//     responseBox.text(message);
 
-    setTimeout(function () {
+//     setTimeout(function () {
 
-        responseBox.addClass("hidden");
+//         responseBox.addClass("hidden");
 
-    }, 4000);
+//     }, 4000);
 
-}
+// }
 
 /*
 |--------------------------------------------------------------------------
@@ -1225,7 +1150,6 @@ function escapeHtml(text) {
 
 /*
 |--------------------------------------------------------------------------
-| PART 3B
 | LOAD PRODUCTS
 |--------------------------------------------------------------------------
 */
@@ -1459,7 +1383,6 @@ $(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PART 3C
 | RENDER PRODUCTS
 |--------------------------------------------------------------------------
 */
@@ -1691,7 +1614,6 @@ function updatePagination() {
 
 /*
 |--------------------------------------------------------------------------
-| PART 3D
 | PRODUCT DETAILS MODAL
 |--------------------------------------------------------------------------
 */
@@ -2362,34 +2284,6 @@ function resetOrder() {
 
 }
 
-/*
-|--------------------------------------------------------------------------
-| Update Statistics Cards
-|--------------------------------------------------------------------------
-*/
-
-function updateStatistics() {
-
-    let totalItems = 0;
-
-    let subtotal = 0;
-
-    cart.forEach(function(item){
-
-        totalItems += Number(item.quantity);
-
-        subtotal += Number(item.quantity) *
-                    Number(item.selling_price);
-
-    });
-
-    $("#cartItems").text(totalItems);
-
-    $("#cartSubtotal").text("₦" + formatMoney(subtotal));
-
-    $("#availableProducts").text(products.length);
-
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -2636,21 +2530,46 @@ console.log("All Keys:", Object.keys(product || {}));
 
 
     const cartItem = {
+        inventory_id: Number(product.inventory_id),
 
-        inventory_id: product.inventory_id,
+        product_id: Number(
+            product.product?.id ??
+            product.product_id ??
+            0
+        ),
 
-        name: product.product?.name || "",
+        store_id: Number(
+            product.store?.id ??
+            product.store_id ??
+            0
+        ),
 
-        barcode: product.product?.barcode || "",
+        name:
+            product.product?.name ??
+            product.name ??
+            "",
 
-        selling_price: Number(product.product?.selling_price) || 0,
+        barcode:
+            product.product?.barcode ??
+            product.barcode ??
+            "",
 
-        available_quantity: Number(product.quantity) || 0,
+        selling_price: Number(
+            product.product?.selling_price ??
+            product.selling_price ??
+            0
+        ),
+
+        available_quantity: Number(
+            product.quantity ?? 0
+        ),
 
         quantity: 1,
 
-        store_name: product.store?.name || ""
-
+        store_name:
+            product.store?.name ??
+            product.store_name ??
+            ""
     };
 
 
@@ -2906,7 +2825,6 @@ $(document).on("click", ".increaseQty", function () {
 });
 
 // Decrease
-
 $(document).on("click", ".decreaseQty", function () {
 
     const index = $(this).data("index");
@@ -3002,28 +2920,25 @@ function updateSummary() {
 
     const totals = calculateTotals();
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cart Summary
+    |--------------------------------------------------------------------------
+    */
 
-    // Subtotal
     $("#subtotal").text(
         "₦" + formatMoney(totals.subtotal)
     );
 
-
-    // Grand Total
     $("#grandTotal").text(
         "₦" + formatMoney(totals.grandTotal)
     );
 
-
-    // Number of different products in cart
     $("#cartCount").text(
-        cart.length
+        cart.length + " Items"
     );
 
-
-    // Total quantity of all products
     let qty = 0;
-
 
     cart.forEach(function(item){
 
@@ -3031,15 +2946,49 @@ function updateSummary() {
 
     });
 
-
     $("#totalQty").text(qty);
 
-
-    // Balance
     $("#balance").text(
         "₦" + formatMoney(totals.balance)
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Summary
+    |--------------------------------------------------------------------------
+    */
+
+    $("#summaryTotal").text(
+        "₦" + formatMoney(totals.grandTotal)
+    );
+
+    $("#summaryPaid").text(
+        "₦" + formatMoney(totals.amountPaid)
+    );
+
+    $("#balanceAmount").text(
+        "₦" + formatMoney(totals.balance)
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Balance Color
+    |--------------------------------------------------------------------------
+    */
+
+    if (totals.balance <= 0) {
+
+        $("#balanceAmount")
+            .removeClass("text-red-600")
+            .addClass("text-green-600");
+
+    } else {
+
+        $("#balanceAmount")
+            .removeClass("text-green-600")
+            .addClass("text-red-600");
+
+    }
 
 }
 
@@ -3062,6 +3011,290 @@ $("#discount, #tax, #shipping, #amountPaid")
 
 
 
+/*
+|--------------------------------------------------------------------------
+| CREATE ORDER
+|--------------------------------------------------------------------------
+*/
+
+$("#createOrderBtn").on("click", function (e) {
+
+    e.preventDefault();
+
+    if (cart.length === 0) {
+
+        showMessage(
+            "Cart is empty."
+        );
+
+        return;
+
+    }
+
+    const btn = $(this);
+
+    btn
+        .text("Creating Order...")
+        .prop("disabled", true);
+
+    const totals = calculateTotals();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PAYMENT STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    let paymentStatus = "pending";
+
+    const amountPaid =
+        Number($("#amountPaid").val()) || 0;
+
+    if (amountPaid >= totals.grandTotal) {
+
+        paymentStatus = "paid";
+
+    } else if (amountPaid > 0) {
+
+        paymentStatus = "partial";
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | BUILD ITEMS
+    |--------------------------------------------------------------------------
+    */
+
+    const items = cart.map(function(item){
+
+        return {
+
+            inventory_id: item.inventory_id,
+
+            product_name: item.name,
+
+            barcode: item.barcode,
+
+            store_name: item.store_name,
+
+            selling_price: Number(item.selling_price),
+
+            quantity: Number(item.quantity),
+
+            line_total:
+                Number(item.quantity) *
+                Number(item.selling_price)
+
+        };
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | REQUEST PAYLOAD
+    |--------------------------------------------------------------------------
+    */
+
+const payload = {
+
+    customer_name:
+        $("#customerName").val(),
+
+    customer_phone:
+        $("#customerPhone").val(),
+
+    customer_email:
+        $("#customerEmail").val(),
+
+    customer_code:
+        $("#customerCode").val(),
+
+    payment_method:
+        $("#paymentMethod").val(),
+
+    payment_status:
+        paymentStatus,
+
+    subtotal:
+        totals.subtotal,
+
+    discount:
+        totals.discount,
+
+    tax:
+        totals.tax,
+
+    shipping:
+        totals.shipping,
+
+    total_amount:
+        totals.grandTotal,
+
+    amount_paid:
+        amountPaid,
+
+    balance:
+        totals.balance,
+
+    notes:
+        $("#notes").val(),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEND THE ACTUAL CART
+    |--------------------------------------------------------------------------
+    */
+
+    items: cart
+
+};
+
+
+/*
+|--------------------------------------------------------------------------
+| DEBUG PAYLOAD
+|--------------------------------------------------------------------------
+*/
+
+console.log(
+    "Payload being sent:",
+    payload
+);
+
+console.log(
+    "Cart being sent:",
+    JSON.stringify(
+        cart,
+        null,
+        2
+    )
+);
+
+    console.log(payload);
+
+    $.ajax({
+
+        url:
+            API_BASE +
+            "/dashboard/orders/create.php",
+
+        method:
+            "POST",
+
+        contentType:
+            "application/json",
+
+        dataType:
+            "json",
+
+        headers: {
+
+            Authorization:
+                "Bearer " +
+                localStorage.getItem("auth_token")
+
+        },
+
+        data:
+            JSON.stringify(payload),
+
+        success(res) {
+
+            console.log("Order Response:", res);
+
+            if (res.status) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | KEEP ORDER ID
+                |--------------------------------------------------------------------------
+                */
+
+                const orderId = res.data.order_id;
+
+                console.log(
+                    "Created Order ID:",
+                    orderId
+                );
+
+
+                showMessage(
+                    "success",
+                    res.message
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | CLEAR CART
+                |--------------------------------------------------------------------------
+                */
+
+                cart = [];
+
+                saveCart();
+
+                renderCart();
+
+                updateSummary();
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | GO TO RECEIPT
+                |--------------------------------------------------------------------------
+                */
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "order-receipt.php?id=" +
+                        encodeURIComponent(orderId);
+
+                }, 1000);
+
+            } else {
+
+                showMessage(
+                    "error",
+                    res.message
+                );
+
+            }
+
+        },
+
+error: function(xhr, status, error){
+
+    console.log("XHR:", xhr);
+
+    console.log("Status:", status);
+
+    console.log("Error:", error);
+
+    console.log("Response:", xhr.responseText);
+
+    showMessage(
+        xhr.responseJSON?.message ||
+        xhr.responseText ||
+        "Unable to create order."
+    );
+
+},
+
+        complete(){
+
+            btn
+                .text("Create Order")
+                .prop("disabled", false);
+
+        }
+
+    });
+
+});
 
 
 

@@ -147,35 +147,74 @@ CREATE TABLE store_inventory (
 
 CREATE TABLE orders (
 
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
-    store_id INT NOT NULL,
+    order_no VARCHAR(50) NOT NULL UNIQUE,
 
-    order_number VARCHAR(100) UNIQUE,
+    customer_name VARCHAR(255) NOT NULL,
 
-    customer_name VARCHAR(200),
+    customer_phone VARCHAR(20) DEFAULT NULL,
 
-    customer_phone VARCHAR(30),
+    customer_email VARCHAR(255) DEFAULT NULL,
 
-    customer_email VARCHAR(150),
-
-    total DECIMAL(12,2) DEFAULT 0,
+    customer_code VARCHAR(50) DEFAULT NULL,
 
     payment_method ENUM(
         'cash',
-        'transfer',
         'card',
-        'pos'
-    ) DEFAULT 'cash',
+        'transfer',
+        'pos',
+        'mobile_money',
+        'other'
+    ) NOT NULL,
 
     payment_status ENUM(
+        'pending',
+        'partial',
         'paid',
-        'unpaid'
-    ) DEFAULT 'paid',
+        'cancelled'
+    ) NOT NULL DEFAULT 'pending',
 
-    created_by INT,
+    subtotal DECIMAL(12,2) NOT NULL DEFAULT 0.00,
 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    discount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    tax DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    shipping DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    total_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    amount_paid DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    balance DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    notes TEXT DEFAULT NULL,
+
+    created_by INT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_order_no (order_no),
+
+    INDEX idx_customer_code (customer_code),
+
+    INDEX idx_customer_phone (customer_phone),
+
+    INDEX idx_payment_status (payment_status),
+
+    INDEX idx_created_by (created_by)
+
+    -- Uncomment if you have a users table
+    -- ,
+    -- CONSTRAINT fk_orders_created_by
+    -- FOREIGN KEY (created_by)
+    -- REFERENCES users(id)
+    -- ON DELETE RESTRICT
+    -- ON UPDATE CASCADE
 
 );
 
@@ -224,33 +263,25 @@ CREATE TABLE order_items (
 
 
 CREATE TABLE customers (
+
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
-    customer_code VARCHAR(30) NOT NULL UNIQUE,
+    customer_code VARCHAR(50) NOT NULL UNIQUE,
 
-    full_name VARCHAR(150) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
 
-    phone VARCHAR(20) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL,
 
-    email VARCHAR(150) DEFAULT NULL UNIQUE,
+    email VARCHAR(255) DEFAULT NULL,
 
     address TEXT DEFAULT NULL,
 
-    city VARCHAR(100) DEFAULT NULL,
-
-    state VARCHAR(100) DEFAULT NULL,
-
-    country VARCHAR(100) DEFAULT 'Nigeria',
-
-    total_orders INT UNSIGNED DEFAULT 0,
-
-    total_spent DECIMAL(15,2) DEFAULT 0.00,
-
-    last_purchase DATETIME DEFAULT NULL,
+    status ENUM(
+        'active',
+        'inactive'
+    ) NOT NULL DEFAULT 'active',
 
     notes TEXT DEFAULT NULL,
-
-    status ENUM('active','inactive') DEFAULT 'active',
 
     created_by INT UNSIGNED NOT NULL,
 
@@ -260,17 +291,112 @@ CREATE TABLE customers (
         ON UPDATE CURRENT_TIMESTAMP,
 
     INDEX idx_customer_code (customer_code),
-    INDEX idx_name (full_name),
-    INDEX idx_phone (phone),
-    INDEX idx_email (email)
 
-    -- Optional
+    INDEX idx_phone (phone),
+
+    INDEX idx_email (email),
+
+    INDEX idx_status (status),
+
+    INDEX idx_created_by (created_by)
+
+    -- Uncomment if you have a users table
+    -- ,
+    -- CONSTRAINT fk_customers_created_by
     -- FOREIGN KEY (created_by)
-    -- REFERENCES admins(id)
+    -- REFERENCES users(id)
     -- ON DELETE RESTRICT
+    -- ON UPDATE CASCADE
+
+);
+
+CREATE TABLE order_items (
+
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    order_id INT UNSIGNED NOT NULL,
+
+    inventory_id INT UNSIGNED NOT NULL,
+
+    product_name VARCHAR(255) NOT NULL,
+
+    barcode VARCHAR(100) DEFAULT NULL,
+
+    store_name VARCHAR(255) DEFAULT NULL,
+
+    unit_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    quantity INT UNSIGNED NOT NULL DEFAULT 1,
+
+    line_total DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_order_id (order_id),
+
+    INDEX idx_inventory_id (inventory_id),
+
+    CONSTRAINT fk_order_items_order
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_order_items_inventory
+        FOREIGN KEY (inventory_id)
+        REFERENCES inventory(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+
 );
 
 
 
+CREATE TABLE order_items (
 
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    order_id INT UNSIGNED NOT NULL,
+
+    store_inventory_id INT NOT NULL,
+
+    store_id INT NOT NULL,
+
+    product_id INT NOT NULL,
+
+    product_name VARCHAR(255) NOT NULL,
+
+    barcode VARCHAR(100) DEFAULT NULL,
+
+    store_name VARCHAR(255) DEFAULT NULL,
+
+    unit_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    quantity INT UNSIGNED NOT NULL DEFAULT 1,
+
+    line_total DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_order_id (order_id),
+
+    INDEX idx_store_inventory_id (store_inventory_id),
+
+    INDEX idx_store_id (store_id),
+
+    INDEX idx_product_id (product_id),
+
+    CONSTRAINT fk_order_items_order
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_order_items_store_inventory
+        FOREIGN KEY (store_inventory_id)
+        REFERENCES store_inventory(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+
+);
 

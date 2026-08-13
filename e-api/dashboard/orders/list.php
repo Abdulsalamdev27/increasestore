@@ -3,50 +3,52 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-/*
-|--------------------------------------------------------------------------
-| HEADERS
-|--------------------------------------------------------------------------
-*/
+/**
+ * ==========================================
+ * HEADERS
+ * ==========================================
+ */
 
-header("Content-Type: application/json");
+header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     http_response_code(200);
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+if ($_SERVER["REQUEST_METHOD"] !== "GET") {
 
     http_response_code(405);
 
     echo json_encode([
         "status" => false,
-        "message" => "Method Not Allowed"
+        "message" => "Method not allowed."
     ]);
 
     exit;
 }
 
-/*
-|--------------------------------------------------------------------------
-| DATABASE
-|--------------------------------------------------------------------------
-*/
+
+/**
+ * ==========================================
+ * DATABASE
+ * ==========================================
+ */
 
 require_once __DIR__ . "/../../../config/dbconn.php";
 require_once __DIR__ . "/../../middleware/auth.php";
 
-/*
-|--------------------------------------------------------------------------
-| AUTHENTICATION
-|--------------------------------------------------------------------------
-*/
 
-$user = $GLOBALS['authUser'] ?? null;
+/**
+ * ==========================================
+ * AUTHENTICATION
+ * ==========================================
+ */
+
+$user = $GLOBALS["authUser"] ?? null;
 
 if (!$user) {
 
@@ -54,183 +56,827 @@ if (!$user) {
 
     echo json_encode([
         "status" => false,
-        "message" => "Unauthorized"
+        "message" => "Unauthorized."
     ]);
 
     exit;
 }
 
-/*
-|--------------------------------------------------------------------------
-| FILTERS
-|--------------------------------------------------------------------------
-*/
 
-$search = trim($_GET['search'] ?? '');
+try {
 
-$storeId = isset($_GET['store_id']) ? (int)$_GET['store_id'] : 0;
+    /**
+     * ==========================================
+     * QUERY PARAMETERS
+     * ==========================================
+     *
+     * Supported:
+     *
+     * ?page=1
+     * ?limit=20
+     * ?search=customer
+     * ?payment_method=cash
+     * ?payment_status=paid
+     * ?created_by=1
+     *
+     */
 
-$paymentMethod = trim($_GET['payment_method'] ?? '');
+    $page = max(
+        1,
+        (int)($_GET["page"] ?? 1)
+    );
 
-$paymentStatus = trim($_GET['payment_status'] ?? '');
+    $limit = max(
+        1,
+        (int)($_GET["limit"] ?? 20)
+    );
 
-/*
-|--------------------------------------------------------------------------
-| SQL
-|--------------------------------------------------------------------------
-*/
+    /**
+     * Prevent excessively large requests
+     */
 
-$sql = "
+    if ($limit > 200) {
+        $limit = 200;
+    }
 
-SELECT
+    $offset = ($page - 1) * $limit;
 
-    o.id,
 
-    o.store_id,
+    $search = trim(
+        $_GET["search"] ?? ""
+    );
 
-    s.store_name,
+    $paymentMethod = trim(
+        $_GET["payment_method"] ?? ""
+    );
 
-    o.order_number,
+    $paymentStatus = trim(
+        $_GET["payment_status"] ?? ""
+    );
 
-    o.customer_name,
+    $createdBy = (int)(
+        $_GET["created_by"] ?? 0
+    );
 
-    o.customer_phone,
 
-    o.customer_email,
+    /**
+     * ==========================================
+     * PREPARE SQL VARIABLES
+     * ==========================================
+     */
 
-    o.total,
+    $params = [];
 
-    o.payment_method,
+    $types = "";
 
-    o.payment_status,
 
-    o.created_by,
+    /**
+     * ==========================================
+     * MAIN SQL QUERY
+     * ==========================================
+     */
 
-    CONCAT(a.firstName,' ',a.lastName) AS created_by_name,
+    $sql = "
 
-    o.created_at
+    SELECT
 
-FROM orders o
+        o.id,
+        o.order_no,
 
-LEFT JOIN stores s
-ON o.store_id = s.id
+        o.customer_name,
+        o.customer_phone,
+        o.customer_email,
+        o.customer_code,
 
-LEFT JOIN admins a
-ON o.created_by = a.id
+        o.payment_method,
+        o.payment_status,
 
-WHERE 1=1
+        o.subtotal,
+        o.discount,
+        o.tax,
+        o.shipping,
+        o.total_amount,
+        o.amount_paid,
+        o.balance,
 
-";
+        o.notes,
 
-$params = [];
-$types = "";
+        o.created_by,
+        o.created_at,
+        o.updated_at,
 
-/*
-|--------------------------------------------------------------------------
-| Search
-|--------------------------------------------------------------------------
-*/
+        CONCAT(
+            COALESCE(a.first_name, ''),
+            ' ',
+            COALESCE(a.last_name, '')
+        ) AS created_by_name,
 
-if ($search !== '') {
+        (
+            SELECT GROUP_CONCAT(
+                DISTINCT oi.store_name
+                ORDER BY oi.store_name ASC
+                SEPARATOR ', '
+            )
 
-    $sql .= "
+            FROM order_items oi
 
-    AND (
+            WHERE oi.order_id = o.id
 
-        o.order_number LIKE ?
+        ) AS store_names,
 
-        OR o.customer_name LIKE ?
+        (
+            SELECT COUNT(*)
 
-        OR o.customer_phone LIKE ?
+            FROM order_items oi
 
-        OR o.customer_email LIKE ?
+            WHERE oi.order_id = o.id
 
-    )
+        ) AS total_items,
+
+        (
+            SELECT COALESCE(
+                SUM(oi.quantity),
+                0
+            )
+
+            FROM order_items oi
+
+            WHERE oi.order_id = o.id
+
+        ) AS total_quantity
+
+    FROM orders o
+
+    LEFT JOIN admins a
+        ON a.id = o.created_by
+
+    WHERE 1 = 1
 
     ";
 
-    $keyword = "%{$search}%";
 
-    $params[] = $keyword;
-    $params[] = $keyword;
-    $params[] = $keyword;
-    $params[] = $keyword;
+    /**
+     * ==========================================
+     * SEARCH FILTER
+     * ==========================================
+     */
 
-    $types .= "ssss";
+    if ($search !== "") {
 
-}
+        $sql .= "
 
-/*
-|--------------------------------------------------------------------------
-| Store Filter
-|--------------------------------------------------------------------------
-*/
+        AND (
 
-if ($storeId > 0) {
+            o.order_no LIKE ?
 
-    $sql .= " AND o.store_id = ? ";
+            OR o.customer_name LIKE ?
 
-    $params[] = $storeId;
+            OR o.customer_phone LIKE ?
 
-    $types .= "i";
+            OR o.customer_email LIKE ?
 
-}
+            OR o.customer_code LIKE ?
 
-/*
-|--------------------------------------------------------------------------
-| Payment Method
-|--------------------------------------------------------------------------
-*/
+        )
 
-if ($paymentMethod !== '') {
+        ";
 
-    $sql .= " AND o.payment_method = ? ";
+        $keyword = "%{$search}%";
 
-    $params[] = $paymentMethod;
+        for ($i = 0; $i < 5; $i++) {
 
-    $types .= "s";
+            $params[] = $keyword;
 
-}
+            $types .= "s";
+        }
+    }
 
-/*
-|--------------------------------------------------------------------------
-| Payment Status
-|--------------------------------------------------------------------------
-*/
 
-if ($paymentStatus !== '') {
+    /**
+     * ==========================================
+     * PAYMENT METHOD FILTER
+     * ==========================================
+     */
 
-    $sql .= " AND o.payment_status = ? ";
+    if ($paymentMethod !== "") {
 
-    $params[] = $paymentStatus;
+        $sql .= "
 
-    $types .= "s";
+        AND o.payment_method = ?
 
-}
+        ";
 
-/*
-|--------------------------------------------------------------------------
-| Order
-|--------------------------------------------------------------------------
-*/
+        $params[] = $paymentMethod;
 
-$sql .= "
+        $types .= "s";
+    }
 
-ORDER BY
 
-o.created_at DESC
+    /**
+     * ==========================================
+     * PAYMENT STATUS FILTER
+     * ==========================================
+     */
 
-";
+    if ($paymentStatus !== "") {
 
-/*
-|--------------------------------------------------------------------------
-| Prepare
-|--------------------------------------------------------------------------
-*/
+        $sql .= "
 
-$stmt = $conn->prepare($sql);
+        AND o.payment_status = ?
 
-if (!$stmt) {
+        ";
+
+        $params[] = $paymentStatus;
+
+        $types .= "s";
+    }
+
+
+    /**
+     * ==========================================
+     * CREATED BY FILTER
+     * ==========================================
+     */
+
+    if ($createdBy > 0) {
+
+        $sql .= "
+
+        AND o.created_by = ?
+
+        ";
+
+        $params[] = $createdBy;
+
+        $types .= "i";
+    }
+
+
+    /**
+     * ==========================================
+     * ORDERING + PAGINATION
+     * ==========================================
+     */
+
+    $sql .= "
+
+    ORDER BY o.created_at DESC
+
+    LIMIT ?, ?
+
+    ";
+
+    $params[] = $offset;
+    $params[] = $limit;
+
+    $types .= "ii";
+
+
+    /**
+     * ==========================================
+     * PREPARE STATEMENT
+     * ==========================================
+     */
+
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+
+        throw new Exception(
+            "Database prepare failed: " . $conn->error
+        );
+    }
+
+
+    /**
+     * ==========================================
+     * BIND PARAMETERS
+     * ==========================================
+     */
+
+    if (!empty($params)) {
+
+        $stmt->bind_param(
+            $types,
+            ...$params
+        );
+    }
+
+
+    /**
+     * ==========================================
+     * EXECUTE QUERY
+     * ==========================================
+     */
+
+    if (!$stmt->execute()) {
+
+        throw new Exception(
+            "Unable to fetch orders: " . $stmt->error
+        );
+    }
+
+
+    /**
+     * ==========================================
+     * GET RESULT
+     * ==========================================
+     */
+
+    $result = $stmt->get_result();
+
+    $orders = [];
+
+
+    /**
+     * ==========================================
+     * BUILD ORDERS
+     * ==========================================
+     */
+
+    while ($row = $result->fetch_assoc()) {
+
+        $orders[] = [
+
+            /**
+             * ----------------------------------
+             * BASIC ORDER INFORMATION
+             * ----------------------------------
+             */
+
+            "id" => (int)$row["id"],
+
+            "order_no" =>
+                $row["order_no"] ?? "",
+
+
+            /**
+             * ----------------------------------
+             * CUSTOMER
+             * ----------------------------------
+             */
+
+            "customer_name" =>
+                $row["customer_name"] ?? "",
+
+            "customer_phone" =>
+                $row["customer_phone"] ?? "",
+
+            "customer_email" =>
+                $row["customer_email"] ?? "",
+
+            "customer_code" =>
+                $row["customer_code"] ?? "",
+
+
+            /**
+             * ----------------------------------
+             * PAYMENT
+             * ----------------------------------
+             */
+
+            "payment_method" =>
+                $row["payment_method"] ?? "",
+
+            "payment_status" =>
+                $row["payment_status"] ?? "",
+
+
+            /**
+             * ----------------------------------
+             * FINANCIAL
+             * ----------------------------------
+             */
+
+            "subtotal" =>
+                (float)($row["subtotal"] ?? 0),
+
+            "discount" =>
+                (float)($row["discount"] ?? 0),
+
+            "tax" =>
+                (float)($row["tax"] ?? 0),
+
+            "shipping" =>
+                (float)($row["shipping"] ?? 0),
+
+            "total_amount" =>
+                (float)($row["total_amount"] ?? 0),
+
+            "amount_paid" =>
+                (float)($row["amount_paid"] ?? 0),
+
+            "balance" =>
+                (float)($row["balance"] ?? 0),
+
+
+            /**
+             * ----------------------------------
+             * OTHER
+             * ----------------------------------
+             */
+
+            "notes" =>
+                $row["notes"] ?? "",
+
+
+            /**
+             * ----------------------------------
+             * CASHIER / CREATED BY
+             * ----------------------------------
+             */
+
+            "created_by" =>
+                (int)($row["created_by"] ?? 0),
+
+            "created_by_name" =>
+                trim(
+                    $row["created_by_name"] ?? ""
+                ),
+
+
+            /**
+             * ----------------------------------
+             * STORE
+             * ----------------------------------
+             */
+
+            "store_name" =>
+                $row["store_names"] ?? "-",
+
+
+            /**
+             * ----------------------------------
+             * ITEM SUMMARY
+             * ----------------------------------
+             */
+
+            "total_items" =>
+                (int)($row["total_items"] ?? 0),
+
+            "total_quantity" =>
+                (int)($row["total_quantity"] ?? 0),
+
+
+            /**
+             * ----------------------------------
+             * DATES
+             * ----------------------------------
+             */
+
+            "created_at" =>
+                $row["created_at"] ?? null,
+
+            "updated_at" =>
+                $row["updated_at"] ?? null,
+
+
+            /**
+             * ----------------------------------
+             * RECEIPT URLS
+             * ----------------------------------
+             */
+
+            "view_url" =>
+                "../pages/order-receipt.php?id=" .
+                (int)$row["id"],
+
+            "print_url" =>
+                "../pages/order-receipt.php?id=" .
+                (int)$row["id"] .
+                "&print=1"
+
+        ];
+    }
+
+
+    /**
+     * ==========================================
+     * CLOSE MAIN STATEMENT
+     * ==========================================
+     */
+
+    $stmt->close();
+
+
+    /**
+     * ==========================================
+     * TOTAL RECORDS
+     * ==========================================
+     */
+
+    $countSql = "
+
+    SELECT COUNT(*) AS total
+
+    FROM orders o
+
+    WHERE 1 = 1
+
+    ";
+
+
+    $countParams = [];
+
+    $countTypes = "";
+
+
+    /**
+     * ==========================================
+     * COUNT SEARCH FILTER
+     * ==========================================
+     */
+
+    if ($search !== "") {
+
+        $countSql .= "
+
+        AND (
+
+            o.order_no LIKE ?
+
+            OR o.customer_name LIKE ?
+
+            OR o.customer_phone LIKE ?
+
+            OR o.customer_email LIKE ?
+
+            OR o.customer_code LIKE ?
+
+        )
+
+        ";
+
+        $keyword = "%{$search}%";
+
+        for ($i = 0; $i < 5; $i++) {
+
+            $countParams[] = $keyword;
+
+            $countTypes .= "s";
+        }
+    }
+
+
+    /**
+     * ==========================================
+     * COUNT PAYMENT METHOD
+     * ==========================================
+     */
+
+    if ($paymentMethod !== "") {
+
+        $countSql .= "
+
+        AND o.payment_method = ?
+
+        ";
+
+        $countParams[] = $paymentMethod;
+
+        $countTypes .= "s";
+    }
+
+
+    /**
+     * ==========================================
+     * COUNT PAYMENT STATUS
+     * ==========================================
+     */
+
+    if ($paymentStatus !== "") {
+
+        $countSql .= "
+
+        AND o.payment_status = ?
+
+        ";
+
+        $countParams[] = $paymentStatus;
+
+        $countTypes .= "s";
+    }
+
+
+    /**
+     * ==========================================
+     * COUNT CREATED BY
+     * ==========================================
+     */
+
+    if ($createdBy > 0) {
+
+        $countSql .= "
+
+        AND o.created_by = ?
+
+        ";
+
+        $countParams[] = $createdBy;
+
+        $countTypes .= "i";
+    }
+
+
+    /**
+     * ==========================================
+     * PREPARE COUNT QUERY
+     * ==========================================
+     */
+
+    $countStmt = $conn->prepare($countSql);
+
+    if (!$countStmt) {
+
+        throw new Exception(
+            "Count query prepare failed: " .
+            $conn->error
+        );
+    }
+
+
+    /**
+     * ==========================================
+     * BIND COUNT PARAMETERS
+     * ==========================================
+     */
+
+    if (!empty($countParams)) {
+
+        $countStmt->bind_param(
+            $countTypes,
+            ...$countParams
+        );
+    }
+
+
+    /**
+     * ==========================================
+     * EXECUTE COUNT
+     * ==========================================
+     */
+
+    if (!$countStmt->execute()) {
+
+        throw new Exception(
+            "Count query failed: " .
+            $countStmt->error
+        );
+    }
+
+
+    /**
+     * ==========================================
+     * GET TOTAL
+     * ==========================================
+     */
+
+    $countResult =
+        $countStmt->get_result();
+
+    $totalRow =
+        $countResult->fetch_assoc();
+
+    $total =
+        (int)($totalRow["total"] ?? 0);
+
+
+    $countStmt->close();
+
+
+    /**
+     * ==========================================
+     * PAGINATION
+     * ==========================================
+     */
+
+    $totalPages = max(
+        1,
+        (int)ceil($total / $limit)
+    );
+
+
+    /**
+     * ==========================================
+     * CLOSE DATABASE
+     * ==========================================
+     */
+
+    $conn->close();
+
+
+    /**
+     * ==========================================
+     * SUCCESS RESPONSE
+     * ==========================================
+     */
+
+    http_response_code(200);
+
+    echo json_encode([
+
+        "status" => true,
+
+        "message" =>
+            "Orders fetched successfully.",
+
+        "pagination" => [
+
+            "page" =>
+                $page,
+
+            "limit" =>
+                $limit,
+
+            "total" =>
+                $total,
+
+            "total_pages" =>
+                $totalPages,
+
+            "has_previous" =>
+                ($page > 1),
+
+            "has_next" =>
+                ($page < $totalPages)
+
+        ],
+
+        "filters" => [
+
+            "search" =>
+                $search,
+
+            "payment_method" =>
+                $paymentMethod,
+
+            "payment_status" =>
+                $paymentStatus,
+
+            "created_by" =>
+                $createdBy
+
+        ],
+
+        "data" =>
+            $orders
+
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    exit;
+
+
+/**
+ * ==========================================
+ * ERROR HANDLER
+ * ==========================================
+ */
+
+} catch (Exception $e) {
+
+    /**
+     * Close main statement if it exists
+     */
+
+    if (
+        isset($stmt) &&
+        $stmt instanceof mysqli_stmt
+    ) {
+
+        $stmt->close();
+    }
+
+
+    /**
+     * Close count statement if it exists
+     */
+
+    if (
+        isset($countStmt) &&
+        $countStmt instanceof mysqli_stmt
+    ) {
+
+        $countStmt->close();
+    }
+
+
+    /**
+     * Close database connection
+     */
+
+    if (
+        isset($conn) &&
+        $conn instanceof mysqli &&
+        !$conn->connect_errno
+    ) {
+
+        $conn->close();
+    }
+
+
+    /**
+     * Error response
+     */
 
     http_response_code(500);
 
@@ -238,82 +884,13 @@ if (!$stmt) {
 
         "status" => false,
 
-        "message" => "Database prepare failed",
+        "message" =>
+            "Failed to fetch orders.",
 
-        "error" => $conn->error
+        "error" =>
+            $e->getMessage()
 
-    ]);
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     exit;
-
 }
-
-if (!empty($params)) {
-
-    $stmt->bind_param($types, ...$params);
-
-}
-
-$stmt->execute();
-
-$result = $stmt->get_result();
-
-$orders = [];
-
-while ($row = $result->fetch_assoc()) {
-
-    $orders[] = [
-
-        "id" => (int)$row["id"],
-
-        "store_id" => (int)$row["store_id"],
-
-        "store_name" => $row["store_name"],
-
-        "order_number" => $row["order_number"],
-
-        "customer_name" => $row["customer_name"],
-
-        "customer_phone" => $row["customer_phone"],
-
-        "customer_email" => $row["customer_email"],
-
-        "total" => (float)$row["total"],
-
-        "payment_method" => $row["payment_method"],
-
-        "payment_status" => $row["payment_status"],
-
-        "created_by" => (int)$row["created_by"],
-
-        "created_by_name" => $row["created_by_name"],
-
-        "created_at" => $row["created_at"]
-
-    ];
-
-}
-
-$stmt->close();
-
-$conn->close();
-
-/*
-|--------------------------------------------------------------------------
-| RESPONSE
-|--------------------------------------------------------------------------
-*/
-
-echo json_encode([
-
-    "status" => true,
-
-    "message" => "Orders fetched successfully.",
-
-    "total" => count($orders),
-
-    "data" => $orders
-
-]);
-
-exit;

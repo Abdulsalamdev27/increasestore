@@ -57,7 +57,7 @@ require_once __DIR__ . "/../includes/header.php";
         <!-- ==========================================
              FILTER CARD
         =========================================== -->
-        <div class="mb-6 rounded-xl border bg-white shadow-sm">
+        <div class="mb-6 rounded-xl bg-white shadow-sm">
 
             <div class="grid gap-5 p-6 md:grid-cols-4">
 
@@ -169,7 +169,7 @@ require_once __DIR__ . "/../includes/header.php";
      TRANSFER TABLE
 =========================================================== -->
 
-<div class="overflow-hidden rounded-xl border bg-white shadow-sm">
+<div class="overflow-hidden rounded-xl bg-white shadow-sm">
 
     <div class="overflow-x-auto">
 
@@ -276,79 +276,30 @@ require_once __DIR__ . "/../includes/header.php";
      PAGINATION
 =========================================================== -->
 
-<div
-    id="pagination"
-    class="mt-6 hidden flex-col gap-4 rounded-xl border bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between">
 
-    <!-- Results -->
-    <div class="text-sm text-gray-600">
+        <div
+            id="pagination"
+            class="flex justify-between items-center mt-4 text-sm text-gray-600 hidden">
 
-        Showing
+            <button
+                id="prevPage"
+                class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">
 
-        <span
-            id="showingFrom"
-            class="font-semibold">
+                ← Previous
 
-            0
+            </button>
 
-        </span>
+            <span id="pageInfo"></span>
 
-        -
+            <button
+                id="nextPage"
+                class="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200">
 
-        <span
-            id="showingTo"
-            class="font-semibold">
+                Next →
 
-            0
+            </button>
 
-        </span>
-
-        of
-
-        <span
-            id="totalRows"
-            class="font-semibold">
-
-            0
-
-        </span>
-
-        transfers
-
-    </div>
-
-    <!-- Controls -->
-    <div class="flex items-center gap-2">
-
-        <button
-            id="prevPage"
-            type="button"
-            class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50">
-
-            ← Previous
-
-        </button>
-
-        <span
-            id="pageInfo"
-            class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium">
-
-            Page 1 of 1
-
-        </span>
-
-        <button
-            id="nextPage"
-            type="button"
-            class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50">
-
-            Next →
-
-        </button>
-
-    </div>
-
-</div>
+        </div>
 
 <!-- ==========================================================
      TRANSFER DETAILS MODAL

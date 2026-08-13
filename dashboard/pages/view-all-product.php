@@ -82,23 +82,46 @@ require_once __DIR__ . "/../includes/header.php";
 <!-- EDIT PRODUCT MODAL -->
 <!-- ========================= -->
 
+<!-- ==========================================
+     EDIT PRODUCT MODAL
+=========================================== -->
 <div
     id="editModal"
-    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    class="fixed inset-0 z-50 hidden items-center justify-center
+           bg-black/50 p-4">
 
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl">
+    <!-- Modal Container -->
+    <div
+        class="w-full max-w-2xl
+               max-h-[95vh]
+               overflow-hidden
+               rounded-2xl
+               bg-white
+               shadow-xl
+               flex flex-col">
 
-        <div class="flex justify-between items-center border-b px-6 py-4">
 
-            <h3 class="text-lg font-semibold">
+        <!-- ======================================
+             MODAL HEADER
+        ======================================= -->
+        <div
+            class="flex shrink-0 items-center justify-between
+                   border-b border-gray-200
+                   px-6 py-4">
 
+            <h3 class="text-lg font-semibold text-gray-800">
                 Edit Product
-
             </h3>
 
+
+            <!-- Close Button -->
             <button
+                type="button"
                 id="closeModal"
-                class="text-2xl leading-none">
+                class="text-2xl leading-none
+                       text-gray-500
+                       transition
+                       hover:text-gray-800">
 
                 &times;
 
@@ -106,180 +129,293 @@ require_once __DIR__ . "/../includes/header.php";
 
         </div>
 
-        <form id="editForm" class="p-6 space-y-5">
 
-            <input type="hidden" id="edit_id">
+        <!-- ======================================
+             FORM
+        ======================================= -->
+        <form
+            id="editForm"
+            class="flex-1 overflow-y-auto p-6 space-y-5">
 
-            <div class="grid md:grid-cols-2 gap-5">
 
+            <!-- Hidden ID -->
+            <input
+                type="hidden"
+                id="edit_id">
+
+
+            <!-- ==================================
+                 PRODUCT FIELDS
+            =================================== -->
+            <div class="grid gap-5 md:grid-cols-2">
+
+
+                <!-- Product Name -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_product_name"
+                        class="label">
+
                         Product Name
+
                     </label>
 
                     <input
                         type="text"
                         id="edit_product_name"
-                        class="input"
+                        class="input w-full"
                         required>
 
                 </div>
 
+
+                <!-- Barcode -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_barcode"
+                        class="label">
+
                         Barcode
+
                     </label>
 
                     <input
                         type="text"
                         id="edit_barcode"
-                        class="input"
+                        class="input w-full"
                         required>
 
                 </div>
 
+
+                <!-- SKU -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_sku"
+                        class="label">
+
                         SKU
+
                     </label>
 
                     <input
                         type="text"
                         id="edit_sku"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Category -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_category"
+                        class="label">
+
                         Category
+
                     </label>
 
                     <input
                         type="text"
                         id="edit_category"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Selling Price -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_selling_price"
+                        class="label">
+
                         Selling Price
+
                     </label>
 
                     <input
                         type="number"
                         step="0.01"
+                        min="0"
                         id="edit_selling_price"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Cost Price -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_cost_price"
+                        class="label">
+
                         Cost Price
+
                     </label>
 
                     <input
                         type="number"
                         step="0.01"
+                        min="0"
                         id="edit_cost_price"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Quantity -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_quantity"
+                        class="label">
+
                         Quantity
+
                     </label>
 
                     <input
                         type="number"
+                        min="0"
                         id="edit_quantity"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Minimum Stock -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_minimum_stock"
+                        class="label">
+
                         Minimum Stock
+
                     </label>
 
                     <input
                         type="number"
+                        min="0"
                         id="edit_minimum_stock"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Unit -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_unit"
+                        class="label">
+
                         Unit
+
                     </label>
 
                     <input
                         type="text"
                         id="edit_unit"
-                        class="input">
+                        class="input w-full">
 
                 </div>
 
+
+                <!-- Status -->
                 <div>
 
-                    <label class="label">
+                    <label
+                        for="edit_status"
+                        class="label">
+
                         Status
+
                     </label>
 
                     <select
                         id="edit_status"
-                        class="input">
+                        class="input w-full">
 
-                        <option value="available">Available</option>
-                        <option value="out_of_stock">Out of Stock</option>
-                        <option value="discontinued">Discontinued</option>
+                        <option value="available">
+                            Available
+                        </option>
+
+                        <option value="out_of_stock">
+                            Out of Stock
+                        </option>
+
+                        <option value="discontinued">
+                            Discontinued
+                        </option>
 
                     </select>
 
                 </div>
 
+
+                <!-- Description -->
                 <div class="md:col-span-2">
 
-                    <label class="label">
+                    <label
+                        for="edit_description"
+                        class="label">
+
                         Description
+
                     </label>
 
                     <textarea
                         id="edit_description"
                         rows="4"
-                        class="input"></textarea>
+                        class="input w-full resize-y"></textarea>
 
                 </div>
 
             </div>
 
-            <div class="flex justify-end gap-3 pt-3">
 
+            <!-- ==================================
+                 FORM ACTIONS
+            =================================== -->
+            <div
+                class="flex shrink-0 justify-end gap-3
+                       border-t border-gray-100
+                       pt-5">
+
+                <!-- Cancel -->
                 <button
                     type="button"
                     id="cancelModal"
-                    class="px-5 py-2 border rounded-lg">
+                    class="rounded-lg
+                           border border-gray-300
+                           px-5 py-2
+                           text-gray-700
+                           transition
+                           hover:bg-gray-100">
 
                     Cancel
 
                 </button>
 
+
+                <!-- Update -->
                 <button
+                    type="submit"
                     id="saveBtn"
-                    class="px-5 py-2 rounded-lg bg-indigo-600 text-white">
+                    class="rounded-lg
+                           bg-indigo-600
+                           px-5 py-2
+                           text-white
+                           transition
+                           hover:bg-indigo-700">
 
                     Update Product
 

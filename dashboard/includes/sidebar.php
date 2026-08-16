@@ -567,7 +567,7 @@
 
         <!-- Create Stock Out -->
         <a
-          href="create-stock-out.php"
+          href="out-stock.php"
           class="block rounded-md py-1.5 text-sm
                 text-gray-600
                 hover:text-indigo-600">

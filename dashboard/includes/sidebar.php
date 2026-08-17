@@ -549,16 +549,27 @@
 
           <i class="ph-bold ph-trend-down text-lg"></i>
 
-          <span>Stock Out</span>
+          <span>        
+            <a
+            href="out-stock.php"
+            class="block rounded-md py-1.5 text-sm
+                  text-gray-600
+                  hover:text-indigo-600">
+
+            Create Stock Out
+
+          </a>
+        </span>
+          
 
         </span>
 
 
-        <i
+        <!-- <i
           class="ph-bold ph-caret-down
                 transition-transform
                 group-open:rotate-180">
-        </i>
+        </i> -->
 
       </summary>
 
@@ -566,7 +577,7 @@
       <div class="ml-8 mt-2 space-y-1">
 
         <!-- Create Stock Out -->
-        <a
+        <!-- <a
           href="out-stock.php"
           class="block rounded-md py-1.5 text-sm
                 text-gray-600
@@ -574,11 +585,11 @@
 
           Create Stock Out
 
-        </a>
+        </a> -->
 
 
         <!-- View Stock Out -->
-        <a
+        <!-- <a
           href="view-all-stock-out.php"
           class="block rounded-md py-1.5 text-sm
                 text-gray-600
@@ -586,7 +597,7 @@
 
           View Stock Out
 
-        </a>
+        </a> -->
 
       </div>
 

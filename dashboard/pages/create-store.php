@@ -135,7 +135,7 @@ $("#storeForm").on("submit", function (e) {
                 showMessage(res.message, "success");
 
                 setTimeout(function () {
-                    window.location.href = "stores.php";
+                    window.location.href = "view-stores.php";
                 }, 1000);
 
             } else {

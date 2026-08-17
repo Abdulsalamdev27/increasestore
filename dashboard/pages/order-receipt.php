@@ -263,13 +263,13 @@ $company = [
         "Lagos, Nigeria",
 
     "phone" =>
-        "+234 XXX XXX XXXX",
+        "+234 8084245962",
 
     "email" =>
-        "info@company.com",
+        "increaseoriginalsupperstore@gmail.com",
 
     "website" =>
-        "www.company.com"
+        ""
 
 ];
 

@@ -22,9 +22,7 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
  */
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-
     http_response_code(200);
-
     exit;
 }
 
@@ -50,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 /**
  * ---------------------------------------------------------
- * DATABASE
+ * DATABASE + AUTH
  * ---------------------------------------------------------
  */
 
@@ -90,7 +88,6 @@ $input = json_decode(
     true
 );
 
-
 if (!is_array($input)) {
 
     http_response_code(400);
@@ -114,7 +111,6 @@ $orderId = isset($input['order_id'])
     ? (int)$input['order_id']
     : 0;
 
-
 if ($orderId <= 0) {
 
     http_response_code(400);
@@ -136,7 +132,6 @@ if ($orderId <= 0) {
 
 $conn->begin_transaction();
 
-
 try {
 
     /**
@@ -149,118 +144,58 @@ try {
         SELECT
             id,
             order_no,
-            payment_status
+            payment_status,
+            notes
         FROM orders
         WHERE id = ?
         LIMIT 1
         FOR UPDATE
     ";
 
-
     $orderStmt = $conn->prepare($orderSql);
 
-
     if (!$orderStmt) {
-
         throw new Exception(
             "Unable to prepare order query: " .
             $conn->error
         );
-
     }
-
 
     $orderStmt->bind_param(
         "i",
         $orderId
     );
 
-
     if (!$orderStmt->execute()) {
-
         throw new Exception(
             "Unable to fetch order: " .
             $orderStmt->error
         );
-
     }
 
-
     $orderResult = $orderStmt->get_result();
-
 
     if ($orderResult->num_rows === 0) {
 
         $orderStmt->close();
 
         throw new Exception(
-            "Order not found"
+            "Order not found."
         );
-
     }
 
-
     $order = $orderResult->fetch_assoc();
-
 
     $orderStmt->close();
 
 
     /**
      * -----------------------------------------------------
-     * CHECK IF ORDER WAS ALREADY STOCKED OUT
-     * -----------------------------------------------------
-     *
-     * We use the order's notes field to record the
-     * stock-out action.
-     *
-     * If you have a dedicated stock_out_status column,
-     * use that instead.
-     *
+     * CHECK ALREADY STOCKED OUT
      * -----------------------------------------------------
      */
 
-    $checkSql = "
-        SELECT notes
-        FROM orders
-        WHERE id = ?
-        LIMIT 1
-    ";
-
-
-    $checkStmt = $conn->prepare($checkSql);
-
-
-    if (!$checkStmt) {
-
-        throw new Exception(
-            "Unable to check order status: " .
-            $conn->error
-        );
-
-    }
-
-
-    $checkStmt->bind_param(
-        "i",
-        $orderId
-    );
-
-
-    $checkStmt->execute();
-
-
-    $checkResult = $checkStmt->get_result();
-
-
-    $checkOrder = $checkResult->fetch_assoc();
-
-
-    $checkStmt->close();
-
-
-    $existingNotes = $checkOrder['notes'] ?? '';
-
+    $existingNotes = $order['notes'] ?? '';
 
     if (
         stripos(
@@ -271,21 +206,15 @@ try {
 
         $conn->rollback();
 
+        http_response_code(409);
 
         echo json_encode([
-
             "status" => false,
-
-            "message" =>
-                "This order has already been stocked out.",
-
-            "order_id" =>
-                $orderId
-
+            "message" => "This order has already been stocked out.",
+            "order_id" => $orderId
         ]);
 
         exit;
-
     }
 
 
@@ -299,8 +228,6 @@ try {
         SELECT
             id,
             order_id,
-            store_inventory_id,
-            store_id,
             product_id,
             product_name,
             barcode,
@@ -311,38 +238,28 @@ try {
         FOR UPDATE
     ";
 
-
     $itemsStmt = $conn->prepare($itemsSql);
 
-
     if (!$itemsStmt) {
-
         throw new Exception(
             "Unable to prepare order items query: " .
             $conn->error
         );
-
     }
-
 
     $itemsStmt->bind_param(
         "i",
         $orderId
     );
 
-
     if (!$itemsStmt->execute()) {
-
         throw new Exception(
             "Unable to fetch order items: " .
             $itemsStmt->error
         );
-
     }
 
-
     $itemsResult = $itemsStmt->get_result();
-
 
     if ($itemsResult->num_rows === 0) {
 
@@ -351,295 +268,321 @@ try {
         throw new Exception(
             "This order does not contain any products."
         );
-
     }
-
 
     $orderItems = [];
 
-
-    while (
-        $item = $itemsResult->fetch_assoc()
-    ) {
-
+    while ($item = $itemsResult->fetch_assoc()) {
         $orderItems[] = $item;
-
     }
-
 
     $itemsStmt->close();
 
 
     /**
      * -----------------------------------------------------
-     * PREPARE INVENTORY QUERY
+     * PREPARE PRODUCT SELECT
      * -----------------------------------------------------
      *
-     * IMPORTANT:
-     *
-     * Change "store_inventory" below if your actual
-     * inventory table has another name.
-     *
-     * The code assumes:
-     *
-     * store_inventory.id
-     * store_inventory.quantity
+     * Stock source:
+     * products.quantity
      *
      * -----------------------------------------------------
      */
 
-    $inventorySelectSql = "
+    $productSelectSql = "
         SELECT
             id,
-            quantity
-        FROM store_inventory
+            product_name,
+            barcode,
+            sku,
+            quantity,
+            minimum_stock,
+            status,
+            is_active
+        FROM products
         WHERE id = ?
         LIMIT 1
         FOR UPDATE
     ";
 
+    $productSelectStmt =
+        $conn->prepare($productSelectSql);
 
-    $inventorySelectStmt =
-        $conn->prepare(
-            $inventorySelectSql
-        );
-
-
-    if (!$inventorySelectStmt) {
-
+    if (!$productSelectStmt) {
         throw new Exception(
-            "Unable to prepare inventory query: " .
+            "Unable to prepare product query: " .
             $conn->error
         );
-
     }
 
 
     /**
      * -----------------------------------------------------
-     * PREPARE INVENTORY UPDATE
+     * PREPARE PRODUCT UPDATE
      * -----------------------------------------------------
      */
 
-    $inventoryUpdateSql = "
-        UPDATE store_inventory
+    $productUpdateSql = "
+        UPDATE products
         SET quantity = quantity - ?
         WHERE id = ?
         AND quantity >= ?
     ";
 
+    $productUpdateStmt =
+        $conn->prepare($productUpdateSql);
 
-    $inventoryUpdateStmt =
-        $conn->prepare(
-            $inventoryUpdateSql
-        );
-
-
-    if (!$inventoryUpdateStmt) {
-
+    if (!$productUpdateStmt) {
         throw new Exception(
-            "Unable to prepare inventory update: " .
+            "Unable to prepare product update: " .
             $conn->error
         );
-
     }
 
 
     /**
      * -----------------------------------------------------
-     * STOCK OUT EACH PRODUCT
+     * STOCK OUT PRODUCTS
      * -----------------------------------------------------
      */
 
     $stockedOutItems = [];
 
-
     foreach ($orderItems as $item) {
 
-        $inventoryId =
-            (int)(
-                $item['store_inventory_id']
-                ?? 0
-            );
+        $productId = (int)(
+            $item['product_id'] ?? 0
+        );
 
+        $quantity = (int)(
+            $item['quantity'] ?? 0
+        );
 
-        $quantity =
-            (int)(
-                $item['quantity']
-                ?? 0
-            );
-
-
-        $productName =
-            $item['product_name']
-            ?? 'Unknown Product';
+        $productName = trim(
+            $item['product_name'] ??
+            'Unknown Product'
+        );
 
 
         /**
-         * Invalid inventory ID
+         * Validate product ID
          */
 
-        if ($inventoryId <= 0) {
-
+        if ($productId <= 0) {
             throw new Exception(
-                "No store inventory record found for " .
+                "Invalid product ID for " .
                 $productName
             );
-
         }
 
 
         /**
-         * Invalid quantity
+         * Validate quantity
          */
 
         if ($quantity <= 0) {
-
             throw new Exception(
                 "Invalid quantity for " .
                 $productName
             );
-
         }
 
 
         /**
          * -------------------------------------------------
-         * GET CURRENT STOCK
+         * GET CURRENT PRODUCT
          * -------------------------------------------------
          */
 
-        $inventorySelectStmt->bind_param(
+        $productSelectStmt->bind_param(
             "i",
-            $inventoryId
+            $productId
         );
 
-
-        if (
-            !$inventorySelectStmt->execute()
-        ) {
-
+        if (!$productSelectStmt->execute()) {
             throw new Exception(
-                "Unable to fetch inventory for " .
-                $productName
+                "Unable to fetch product " .
+                $productName .
+                ": " .
+                $productSelectStmt->error
             );
-
         }
 
+        $productResult =
+            $productSelectStmt->get_result();
 
-        $inventoryResult =
-            $inventorySelectStmt->get_result();
-
-
-        if (
-            $inventoryResult->num_rows === 0
-        ) {
-
+        if ($productResult->num_rows === 0) {
             throw new Exception(
-                "Inventory record not found for " .
+                "Product not found: " .
                 $productName
             );
-
         }
 
-
-        $inventory =
-            $inventoryResult->fetch_assoc();
-
-
-        $currentStock =
-            (int)(
-                $inventory['quantity']
-                ?? 0
-            );
+        $product =
+            $productResult->fetch_assoc();
 
 
         /**
          * -------------------------------------------------
-         * CHECK AVAILABLE STOCK
+         * CURRENT STOCK
+         * -------------------------------------------------
+         */
+
+        $currentStock = (int)(
+            $product['quantity'] ?? 0
+        );
+
+
+        /**
+         * -------------------------------------------------
+         * CHECK STOCK
          * -------------------------------------------------
          */
 
         if ($currentStock < $quantity) {
 
             throw new Exception(
-
                 "Insufficient stock for " .
                 $productName .
                 ". Available: " .
                 $currentStock .
                 ", Required: " .
                 $quantity
-
             );
-
         }
 
 
         /**
          * -------------------------------------------------
-         * UPDATE STOCK
+         * DEDUCT PRODUCT STOCK
          * -------------------------------------------------
          */
 
-        $inventoryUpdateStmt->bind_param(
+        $productUpdateStmt->bind_param(
             "iii",
             $quantity,
-            $inventoryId,
+            $productId,
             $quantity
         );
 
-
-        if (
-            !$inventoryUpdateStmt->execute()
-        ) {
+        if (!$productUpdateStmt->execute()) {
 
             throw new Exception(
-
                 "Unable to stock out " .
                 $productName .
                 ": " .
-                $inventoryUpdateStmt->error
-
+                $productUpdateStmt->error
             );
-
         }
 
 
-        if (
-            $inventoryUpdateStmt->affected_rows !== 1
-        ) {
+        /**
+         * Verify update
+         */
+
+        if ($productUpdateStmt->affected_rows !== 1) {
 
             throw new Exception(
-
                 "Stock update failed for " .
                 $productName
-
             );
-
         }
 
+
+        /**
+         * -------------------------------------------------
+         * CALCULATE NEW STOCK
+         * -------------------------------------------------
+         */
 
         $newStock =
             $currentStock - $quantity;
 
 
+        /**
+         * -------------------------------------------------
+         * UPDATE PRODUCT STATUS
+         * -------------------------------------------------
+         */
+
+        if ($newStock <= 0) {
+
+            $statusSql = "
+                UPDATE products
+                SET status = 'out_of_stock'
+                WHERE id = ?
+            ";
+
+        } elseif ((int)$product['is_active'] === 1) {
+
+            $statusSql = "
+                UPDATE products
+                SET status = 'available'
+                WHERE id = ?
+            ";
+
+        } else {
+
+            $statusSql = null;
+        }
+
+
+        if ($statusSql !== null) {
+
+            $statusStmt =
+                $conn->prepare($statusSql);
+
+            if (!$statusStmt) {
+                throw new Exception(
+                    "Unable to prepare product status update: " .
+                    $conn->error
+                );
+            }
+
+            $statusStmt->bind_param(
+                "i",
+                $productId
+            );
+
+            if (!$statusStmt->execute()) {
+
+                $error =
+                    $statusStmt->error;
+
+                $statusStmt->close();
+
+                throw new Exception(
+                    "Unable to update product status for " .
+                    $productName .
+                    ": " .
+                    $error
+                );
+            }
+
+            $statusStmt->close();
+        }
+
+
+        /**
+         * -------------------------------------------------
+         * STORE RESULT
+         * -------------------------------------------------
+         */
+
         $stockedOutItems[] = [
 
             "product_id" =>
-                (int)(
-                    $item['product_id']
-                    ?? 0
-                ),
+                $productId,
 
             "product_name" =>
-                $productName,
+                $product['product_name'],
 
             "barcode" =>
-                $item['barcode'] ?? null,
+                $product['barcode'],
 
-            "store_inventory_id" =>
-                $inventoryId,
+            "sku" =>
+                $product['sku'],
 
             "quantity_removed" =>
                 $quantity,
@@ -648,47 +591,47 @@ try {
                 $currentStock,
 
             "remaining_stock" =>
-                $newStock
+                $newStock,
+
+            "status" =>
+                $newStock <= 0
+                    ? "out_of_stock"
+                    : "available"
 
         ];
-
     }
 
 
-    $inventorySelectStmt->close();
-    $inventoryUpdateStmt->close();
+    /**
+     * -----------------------------------------------------
+     * CLOSE PRODUCT STATEMENTS
+     * -----------------------------------------------------
+     */
+
+    $productSelectStmt->close();
+    $productUpdateStmt->close();
 
 
     /**
      * -----------------------------------------------------
      * UPDATE ORDER NOTES
      * -----------------------------------------------------
-     *
-     * This records that stock-out has already happened.
-     *
-     * -----------------------------------------------------
      */
 
     $stockOutTime =
         date("Y-m-d H:i:s");
-
 
     $stockOutUser =
         isset($user['id'])
             ? (int)$user['id']
             : 0;
 
-
     $newNotes =
         trim($existingNotes);
 
-
     if ($newNotes !== '') {
-
         $newNotes .= "\n\n";
-
     }
-
 
     $newNotes .=
         "STOCK_OUT_COMPLETED | " .
@@ -698,28 +641,27 @@ try {
         $stockOutUser;
 
 
+    /**
+     * -----------------------------------------------------
+     * UPDATE ORDER
+     * -----------------------------------------------------
+     */
+
     $updateOrderSql = "
         UPDATE orders
         SET notes = ?
         WHERE id = ?
     ";
 
-
     $updateOrderStmt =
-        $conn->prepare(
-            $updateOrderSql
-        );
-
+        $conn->prepare($updateOrderSql);
 
     if (!$updateOrderStmt) {
-
         throw new Exception(
             "Unable to prepare order update: " .
             $conn->error
         );
-
     }
-
 
     $updateOrderStmt->bind_param(
         "si",
@@ -727,18 +669,18 @@ try {
         $orderId
     );
 
+    if (!$updateOrderStmt->execute()) {
 
-    if (
-        !$updateOrderStmt->execute()
-    ) {
+        $error =
+            $updateOrderStmt->error;
+
+        $updateOrderStmt->close();
 
         throw new Exception(
             "Unable to update order: " .
-            $updateOrderStmt->error
+            $error
         );
-
     }
-
 
     $updateOrderStmt->close();
 
@@ -754,12 +696,11 @@ try {
 
     /**
      * -----------------------------------------------------
-     * RESPONSE
+     * SUCCESS RESPONSE
      * -----------------------------------------------------
      */
 
     http_response_code(200);
-
 
     echo json_encode([
 
@@ -787,7 +728,6 @@ try {
 
             "items" =>
                 $stockedOutItems
-
         ]
 
     ]);
@@ -796,7 +736,6 @@ try {
 
 
 } catch (Throwable $e) {
-
 
     /**
      * -----------------------------------------------------
@@ -808,7 +747,6 @@ try {
 
 
     http_response_code(500);
-
 
     echo json_encode([
 
@@ -825,9 +763,5 @@ try {
 
     ]);
 
-
     exit;
-
 }
-
-?>

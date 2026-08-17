@@ -381,7 +381,7 @@ $("#productForm").on("submit", function (e) {
 
                 setTimeout(function(){
 
-                    window.location.href = "products.php";
+                    window.location.href = "view-all-product.php";
 
                 },1000);
 

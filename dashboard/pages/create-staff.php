@@ -319,7 +319,7 @@ $("#staffForm").on("submit", function(e){
 
                 setTimeout(function(){
 
-                    window.location.href = "staff.php";
+                    window.location.href = "view-all-staff.php";
 
                 },1000);
 

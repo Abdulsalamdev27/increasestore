@@ -307,15 +307,16 @@ require_once __DIR__ . "/../includes/header.php";
 
 <div
     id="transferModal"
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
 
-    <div class="w-full max-w-4xl rounded-2xl bg-white shadow-2xl">
+    <div
+        class="flex w-full max-w-4xl max-h-[90vh] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
 
         <!-- ==========================
              MODAL HEADER
         =========================== -->
 
-        <div class="flex items-center justify-between border-b px-6 py-4">
+        <div class="flex shrink-0 items-center justify-between border-b bg-white px-6 py-4">
 
             <div>
 
@@ -340,13 +341,14 @@ require_once __DIR__ . "/../includes/header.php";
 
         </div>
 
+
         <!-- ==========================
              LOADING STATE
         =========================== -->
 
         <div
             id="modalLoader"
-            class="hidden border-b bg-gray-50 px-6 py-8 text-center">
+            class="hidden shrink-0 border-b bg-gray-50 px-6 py-8 text-center">
 
             <svg
                 class="mx-auto mb-3 h-8 w-8 animate-spin text-indigo-600"
@@ -375,261 +377,302 @@ require_once __DIR__ . "/../includes/header.php";
 
         </div>
 
+
         <!-- ==========================
              FORM
         =========================== -->
 
-        <form id="transferForm">
+        <form
+            id="transferForm"
+            class="flex min-h-0 flex-1 flex-col">
 
             <input
                 type="hidden"
                 id="transfer_id">
 
-            <div class="grid gap-6 p-6 md:grid-cols-2">
 
-                <!-- Reference -->
+            <!-- ==========================
+                 SCROLLABLE CONTENT
+            =========================== -->
 
-                <div>
+            <div
+                class="min-h-0 flex-1 overflow-y-auto">
 
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                <div class="grid gap-6 p-6 md:grid-cols-2">
 
-                        Reference No.
+                    <!-- Reference -->
 
-                    </label>
+                    <div>
 
-                    <input
-                        id="reference_no"
-                        type="text"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                        <label
+                            class="mb-2 block text-sm font-medium text-gray-700">
 
-                </div>
+                            Reference No.
 
-                <!-- Status -->
+                        </label>
 
-                <div>
+                        <input
+                            id="reference_no"
+                            type="text"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                    <label class="mb-2 block text-sm font-medium text-gray-700">
+                    </div>
 
-                        Status
 
-                    </label>
+                    <!-- Status -->
 
-                    <select
-                        id="status"
-                        class="w-full rounded-lg border px-4 py-3">
+                    <div>
 
-                        <option value="pending">
-                            Pending
-                        </option>
+                        <label
+                            class="mb-2 block text-sm font-medium text-gray-700">
 
-                        <option value="accepted">
-                            Accepted
-                        </option>
+                            Status
 
-                        <option value="rejected">
-                            Rejected
-                        </option>
+                        </label>
 
-                    </select>
+                        <select
+                            id="status"
+                            class="w-full rounded-lg border px-4 py-3">
 
-                </div>
+                            <option value="pending">
+                                Pending
+                            </option>
 
-                <!-- Product -->
+                            <option value="accepted">
+                                Accepted
+                            </option>
 
-                <div>
+                            <option value="rejected">
+                                Rejected
+                            </option>
 
-                    <label class="mb-2 block text-sm font-medium">
+                        </select>
 
-                        Product
+                    </div>
 
-                    </label>
 
-                    <input
-                        id="product_name"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                    <!-- Product -->
 
-                </div>
+                    <div>
 
-                <!-- Store -->
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                <div>
+                            Product
 
-                    <label class="mb-2 block text-sm font-medium">
+                        </label>
 
-                        Store
+                        <input
+                            id="product_name"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                    </label>
+                    </div>
 
-                    <input
-                        id="store_name"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                </div>
+                    <!-- Store -->
 
-                <!-- Barcode -->
+                    <div>
 
-                <div>
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                    <label class="mb-2 block text-sm font-medium">
+                            Store
 
-                        Barcode
+                        </label>
 
-                    </label>
+                        <input
+                            id="store_name"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                    <input
-                        id="barcode"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                    </div>
 
-                </div>
 
-                <!-- SKU -->
+                    <!-- Barcode -->
 
-                <div>
+                    <div>
 
-                    <label class="mb-2 block text-sm font-medium">
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                        SKU
+                            Barcode
 
-                    </label>
+                        </label>
 
-                    <input
-                        id="sku"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                        <input
+                            id="barcode"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                </div>
+                    </div>
 
-                <!-- Quantity -->
 
-                <div>
+                    <!-- SKU -->
 
-                    <label class="mb-2 block text-sm font-medium">
+                    <div>
 
-                        Quantity
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                    </label>
+                            SKU
 
-                    <input
-                        id="quantity"
-                        type="number"
-                        min="1"
-                        class="w-full rounded-lg border px-4 py-3">
+                        </label>
 
-                </div>
+                        <input
+                            id="sku"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                <!-- Movement -->
+                    </div>
 
-                <div>
 
-                    <label class="mb-2 block text-sm font-medium">
+                    <!-- Quantity -->
 
-                        Movement Type
+                    <div>
 
-                    </label>
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                    <input
-                        id="movement_type"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                            Quantity
 
-                </div>
+                        </label>
 
-                <!-- Sent By -->
+                        <input
+                            id="quantity"
+                            type="number"
+                            min="1"
+                            class="w-full rounded-lg border px-4 py-3">
 
-                <div>
+                    </div>
 
-                    <label class="mb-2 block text-sm font-medium">
 
-                        Sent By
+                    <!-- Movement -->
 
-                    </label>
+                    <div>
 
-                    <input
-                        id="sent_by"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                </div>
+                            Movement Type
 
-                <!-- Reviewed By -->
+                        </label>
 
-                <div>
+                        <input
+                            id="movement_type"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                    <label class="mb-2 block text-sm font-medium">
+                    </div>
 
-                        Reviewed By
 
-                    </label>
+                    <!-- Sent By -->
 
-                    <input
-                        id="reviewed_by"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                    <div>
 
-                </div>
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                <!-- Created -->
+                            Sent By
 
-                <div>
+                        </label>
 
-                    <label class="mb-2 block text-sm font-medium">
+                        <input
+                            id="sent_by"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                        Date Sent
+                    </div>
 
-                    </label>
 
-                    <input
-                        id="created_at"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+                    <!-- Reviewed By -->
 
-                </div>
+                    <div>
 
-                <!-- Reviewed -->
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                <div>
+                            Reviewed By
 
-                    <label class="mb-2 block text-sm font-medium">
+                        </label>
 
-                        Reviewed At
+                        <input
+                            id="reviewed_by"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                    </label>
+                    </div>
 
-                    <input
-                        id="reviewed_at"
-                        readonly
-                        class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                </div>
+                    <!-- Created -->
 
-                <!-- Remarks -->
+                    <div>
 
-                <div class="md:col-span-2">
+                        <label
+                            class="mb-2 block text-sm font-medium">
 
-                    <label class="mb-2 block text-sm font-medium">
+                            Date Sent
 
-                        Remarks
+                        </label>
 
-                    </label>
+                        <input
+                            id="created_at"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
 
-                    <textarea
-                        id="remarks"
-                        rows="4"
-                        class="w-full rounded-lg border px-4 py-3 resize-none"></textarea>
+                    </div>
+
+
+                    <!-- Reviewed -->
+
+                    <div>
+
+                        <label
+                            class="mb-2 block text-sm font-medium">
+
+                            Reviewed At
+
+                        </label>
+
+                        <input
+                            id="reviewed_at"
+                            readonly
+                            class="w-full rounded-lg border bg-gray-100 px-4 py-3">
+
+                    </div>
+
+
+                    <!-- Remarks -->
+
+                    <div class="md:col-span-2">
+
+                        <label
+                            class="mb-2 block text-sm font-medium">
+
+                            Remarks
+
+                        </label>
+
+                        <textarea
+                            id="remarks"
+                            rows="4"
+                            class="w-full resize-none rounded-lg border px-4 py-3"></textarea>
+
+                    </div>
 
                 </div>
 
             </div>
 
+
             <!-- ==========================
                  FOOTER BUTTONS
+                 STAYS FIXED
             =========================== -->
 
-            <div class="flex flex-wrap justify-end gap-3 border-t bg-gray-50 px-6 py-4">
+            <div
+                class="flex shrink-0 flex-wrap justify-end gap-3 border-t bg-gray-50 px-6 py-4">
 
                 <button
                     type="button"
@@ -640,6 +683,7 @@ require_once __DIR__ . "/../includes/header.php";
 
                 </button>
 
+
                 <button
                     type="button"
                     id="rejectTransfer"
@@ -648,6 +692,7 @@ require_once __DIR__ . "/../includes/header.php";
                     Reject
 
                 </button>
+
 
                 <button
                     type="button"
@@ -658,6 +703,7 @@ require_once __DIR__ . "/../includes/header.php";
 
                 </button>
 
+
                 <button
                     type="button"
                     id="cancelModal"
@@ -666,6 +712,7 @@ require_once __DIR__ . "/../includes/header.php";
                     Close
 
                 </button>
+
 
                 <button
                     type="submit"
@@ -683,6 +730,8 @@ require_once __DIR__ . "/../includes/header.php";
     </div>
 
 </div>
+
+
 
 <?php include("../includes/footer.php"); ?>
 
